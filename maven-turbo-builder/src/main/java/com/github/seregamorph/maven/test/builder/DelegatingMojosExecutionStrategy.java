@@ -13,6 +13,9 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.List;
 
+/**
+ * @author Sergey Chernov
+ */
 @Named
 @Singleton
 @Priority(10)
