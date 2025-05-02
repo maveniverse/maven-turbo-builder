@@ -29,7 +29,7 @@ To set up the extension
         <!-- https://github.com/seregamorph/maven-turbo-reactor -->
         <groupId>com.github.seregamorph</groupId>
         <artifactId>maven-turbo-builder</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.1</version>
     </extension>
 </extensions>
 ```
