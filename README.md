@@ -39,6 +39,9 @@ To run build with custom Builder:
 mvn clean verify -b turbo
 ```
 
+Example adoption:
+* [Maven Surefire](https://github.com/seregamorph/maven-surefire/pull/1)
+
 Compatibility:
 * this extension can be used with [Maven Surefire Cached Extension](https://github.com/seregamorph/maven-surefire-cached)
 * this extension can be used with [Develocity Maven Extension](https://gradle.com/help/maven-extension/)
