@@ -11,6 +11,28 @@
     <artifactId>maven-turbo-builder</artifactId>
     <packaging>jar</packaging>
 
+    <description>
+        Maven Extension with efficient multi-module build scheduling
+    </description>
+
+    <url>https://github.com/seregamorph/maven-turbo-reactor</url>
+
+    <developers>
+        <developer>
+            <id>seregamorph</id>
+            <name>Sergey Chernov</name>
+            <email>serega.morph[at]gmail.com</email>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.maven</groupId>

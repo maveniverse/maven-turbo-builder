@@ -40,6 +40,7 @@ mvn clean verify -b turbo
 ```
 
 Compatibility:
+* this extension can be used with [Maven Surefire Cached Extension](https://github.com/seregamorph/maven-surefire-cached)
 * this extension can be used with [Develocity Maven Extension](https://gradle.com/help/maven-extension/)
 
 Known limitations:
