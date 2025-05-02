@@ -20,7 +20,7 @@ See this example of three modules depending on each other: `test-utils`, `core` 
 multi-module, Maven by default will build it in a single core even with `-T1C` parameter. This extension will
 schedule it in a more efficient way:
 
-<img src="doc/timelines.png" alt="Timelines" width="700"/>
+<img src="maven-turbo-builder/doc/timelines.png" alt="Timelines" width="700"/>
 
 To set up the extension
 ```xml
