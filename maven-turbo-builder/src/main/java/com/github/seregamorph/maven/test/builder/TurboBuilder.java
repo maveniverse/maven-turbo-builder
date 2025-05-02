@@ -27,9 +27,21 @@ import org.apache.maven.lifecycle.internal.builder.multithreaded.ConcurrencyDepe
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.logging.Logger;
 
+/**
+ * Custom maven project builder. It's rewritten from original
+ * {@link org.apache.maven.lifecycle.internal.builder.multithreaded.MultiThreadedBuilder}
+ *
+ * Use "-b turbo" maven parameters like "mvn clean verify -b turbo" to activate.
+ * Schedules downstream dependencies right after the package phase, also it's coupled with
+ * {@link TurboMojosExecutionStrategy} reordering package and test phases.
+ *
+ * @author Sergey Chernov
+ */
 @Singleton
-@Named("turbo")
+@Named(TurboBuilder.BUILDER_TURBO)
 public class TurboBuilder implements Builder {
+
+    public static final String BUILDER_TURBO = "turbo";
 
     private final LifecycleModuleBuilder lifecycleModuleBuilder;
     private final Logger logger;
@@ -51,6 +63,8 @@ public class TurboBuilder implements Builder {
         int nThreads = Math.min(
             session.getRequest().getDegreeOfConcurrency(),
             session.getProjects().size());
+        logger.info("TurboBuilder will use " + nThreads + " threads to build "
+            + session.getProjects().size() + " modules");
         boolean parallel = nThreads > 1;
         // Propagate the parallel flag to the root session and all of the cloned sessions in each project segment
         session.setParallel(parallel);
@@ -100,7 +114,7 @@ public class TurboBuilder implements Builder {
             logger.debug("Scheduling: " + projectSegment.getProject());
             Callable<MavenProject> cb = createBuildCallable(
                 rootSession, projectSegment, reactorContext, taskSegment, duplicateArtifactIds);
-            tasks.add(service.submit(mavenProject, cb));
+            tasks.add(service.submit(cb));
         }
 
         // for each finished project
@@ -123,7 +137,7 @@ public class TurboBuilder implements Builder {
                             reactorContext,
                             taskSegment,
                             duplicateArtifactIds);
-                        tasks.add(service.submit(mavenProject, cb));
+                        tasks.add(service.submit(cb));
                     }
                 }
             } catch (InterruptedException | ExecutionException e) {
@@ -170,7 +184,7 @@ public class TurboBuilder implements Builder {
         };
     }
 
-    private Set<String> gatherDuplicateArtifactIds(Set<MavenProject> projects) {
+    private static Set<String> gatherDuplicateArtifactIds(Set<MavenProject> projects) {
         Set<String> artifactIds = new HashSet<>(projects.size());
         Set<String> duplicateArtifactIds = new HashSet<>();
         for (MavenProject project : projects) {

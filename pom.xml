@@ -30,20 +30,22 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.testSource>17</maven.compiler.testSource>
+        <maven.compiler.testTarget>17</maven.compiler.testTarget>
 
         <maven.version>3.9.9</maven.version>
         <maven.plugins.version>3.8.2</maven.plugins.version>
         <maven-plugin-tools.version>3.8.2</maven-plugin-tools.version>
-        <maven-surefire.version>3.2.5</maven-surefire.version>
+        <maven-surefire.version>3.5.3</maven-surefire.version>
 
-        <junit-jupiter.version>5.10.1</junit-jupiter.version>
+        <junit-jupiter.version>5.12.1</junit-jupiter.version>
+        <slf4j.version>1.7.36</slf4j.version>
     </properties>
 
     <modules>
-        <module>turbo-builder</module>
-        <module>turbo-builder-maven-plugin</module>
+        <module>maven-turbo-builder</module>
     </modules>
 
     <build>
@@ -102,6 +104,11 @@
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-core</artifactId>
                 <version>${maven.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
