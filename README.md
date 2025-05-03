@@ -1,4 +1,8 @@
-# maven-turbo-reactor
+
+[![Maven Central Version](https://img.shields.io/maven-central/v/com.github.seregamorph/maven-turbo-reactor?style=flat-square)](https://central.sonatype.com/artifact/com.github.seregamorph/maven-turbo-reactor/overview)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
+# Maven Turbo Reactor
 This project contains Maven extension to boost builds.
 
 ## Maven Turbo builder
@@ -48,3 +52,5 @@ Compatibility:
 
 Known limitations:
 * this extension is not compatible with [Apache Maven Build Cache Extension](https://maven.apache.org/extensions/maven-build-cache-extension/)
+* the `test-jar` dependency (compiled test classes of other module) is not supported, because when downstream dependency is
+scheduled to be built, the test-jar is not yet ready. Don't use `test-jar` dependencies in your project
