@@ -8,7 +8,7 @@
     <packaging>pom</packaging>
 
     <description>
-        Maven extension to boost multi-module builds
+        Maven extensions to boost multi-module builds
     </description>
 
     <url>https://github.com/seregamorph/maven-turbo-reactor</url>

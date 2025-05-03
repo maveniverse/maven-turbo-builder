@@ -12,7 +12,7 @@
     <packaging>jar</packaging>
 
     <description>
-        Maven Extension with efficient multi-module build scheduling
+        Maven Extension for efficient multi-module build scheduling
     </description>
 
     <url>https://github.com/seregamorph/maven-turbo-reactor</url>
