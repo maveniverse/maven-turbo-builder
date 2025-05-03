@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 # Maven Turbo Reactor
-This project contains Maven extension to boost builds.
+This project contains Maven extensions to boost builds.
 
 ## Maven Turbo builder
 
