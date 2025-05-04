@@ -26,7 +26,7 @@ schedule it in a more efficient way:
 
 <img src="maven-turbo-builder/doc/timelines.png" alt="Timelines" width="700"/>
 
-To set up the extension
+To set up the extension add to `.mvn/extensions.xml` in the root of the project
 ```xml
 <extensions>
     <extension>
