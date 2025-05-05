@@ -33,7 +33,7 @@ To set up the extension add to `.mvn/extensions.xml` in the root of the project
         <!-- https://github.com/seregamorph/maven-turbo-reactor -->
         <groupId>com.github.seregamorph</groupId>
         <artifactId>maven-turbo-builder</artifactId>
-        <version>0.1</version>
+        <version>0.2</version>
     </extension>
 </extensions>
 ```
