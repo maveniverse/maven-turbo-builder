@@ -10,7 +10,7 @@ To set up the extension
         <!-- https://github.com/seregamorph/maven-surefire-cached -->
         <groupId>com.github.seregamorph</groupId>
         <artifactId>maven-simple-parallel-builder</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.2</version>
     </extension>
 </extensions>
 ```
