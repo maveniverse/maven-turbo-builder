@@ -5,11 +5,15 @@ import org.apache.maven.lifecycle.LifecycleExecutionException;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionRunner;
 import org.apache.maven.plugin.MojosExecutionStrategy;
+import org.apache.maven.project.MavenProject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.github.seregamorph.maven.turbo.MavenPropertyUtils.getProperty;
+import static com.github.seregamorph.maven.turbo.MavenPropertyUtils.isEmptyOrTrue;
 
 /**
  * @author Sergey Chernov
@@ -92,14 +96,18 @@ public class TurboMojosExecutionStrategy implements MojosExecutionStrategy {
         }
 
         List<MojoExecution> executedPackageMojos = new ArrayList<>();
-        boolean signaled = false;
+        MavenProject currentProject = session.getCurrentProject();
+        // There can be scenarios when we use TurboBuilder as default, but disable per project, property or via profile,
+        // when it's known that the downstream dependencies should be only scheduled when all phases are completed.
+        boolean skipTurboSignal = isEmptyOrTrue(getProperty(session, currentProject, "skipTurboSignal"));
+        boolean signaled = skipTurboSignal;
         for (MojoExecution mojoExecution : reorderedMojos) {
             if (!signaled && packageMojos.isEmpty()) {
                 String lifecyclePhase = mojoExecution.getLifecyclePhase();
                 if (lifecyclePhase != null && isTest(lifecyclePhase)) {
                     signaled = true;
                     // signal before tests
-                    SignalingExecutorCompletionService.signal(session.getCurrentProject());
+                    SignalingExecutorCompletionService.signal(currentProject);
                 }
             }
             mojoRunner.run(mojoExecution);
@@ -109,7 +117,7 @@ public class TurboMojosExecutionStrategy implements MojosExecutionStrategy {
                     if (packageMojos.equals(executedPackageMojos)) {
                         signaled = true;
                         // signal after package
-                        SignalingExecutorCompletionService.signal(session.getCurrentProject());
+                        SignalingExecutorCompletionService.signal(currentProject);
                     }
                 }
             }

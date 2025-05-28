@@ -151,5 +151,4 @@ class TurboMojosExecutionStrategyTest {
 
         assertEquals(expectedEvents, eventsList);
     }
-
 }
