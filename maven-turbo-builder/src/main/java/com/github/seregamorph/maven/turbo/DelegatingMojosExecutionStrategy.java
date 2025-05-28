@@ -1,4 +1,4 @@
-package com.github.seregamorph.maven.test.builder;
+package com.github.seregamorph.maven.turbo;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.LifecycleExecutionException;
@@ -8,6 +8,7 @@ import org.apache.maven.plugin.MojoExecutionRunner;
 import org.apache.maven.plugin.MojosExecutionStrategy;
 import org.codehaus.plexus.logging.Logger;
 import org.eclipse.sisu.Priority;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
