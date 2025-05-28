@@ -18,32 +18,31 @@ class TurboMojosExecutionStrategyTest {
     @Test
     public void shouldReorderAndSignalFullPhases() throws LifecycleExecutionException {
         List<String> phases = List.of(
-            "validate",
-            "initialize",
-            "generate-sources",
-            "process-sources",
-            "generate-resources",
-            "process-resources",
-            "compile",
-            "process-classes",
+                "validate",
+                "initialize",
+                "generate-sources",
+                "process-sources",
+                "generate-resources",
+                "process-resources",
+                "compile",
+                "process-classes",
+                // note: already reoredered before test phases
+                "prepare-package",
+                "package",
 
-            "generate-test-sources",
-            "process-test-sources",
-            "generate-test-resources",
-            "process-test-resources",
-            "test-compile",
-            "process-test-classes",
-            "test",
-            // moved before "*test*" phases
-            "prepare-package",
-            "package",
-
-            "pre-integration-test",
-            "integration-test",
-            "post-integration-test",
-            "verify",
-            "install",
-            "deploy"
+                "generate-test-sources",
+                "process-test-sources",
+                "generate-test-resources",
+                "process-test-resources",
+                "test-compile",
+                "process-test-classes",
+                "test",
+                "pre-integration-test",
+                "integration-test",
+                "post-integration-test",
+                "verify",
+                "install",
+                "deploy"
         );
         var expectedEvents = List.of(
             "exec:validate",

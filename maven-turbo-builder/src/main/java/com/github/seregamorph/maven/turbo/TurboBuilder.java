@@ -1,6 +1,7 @@
 package com.github.seregamorph.maven.turbo;
 
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.lifecycle.DefaultLifecycles;
 import org.apache.maven.lifecycle.internal.*;
 import org.apache.maven.lifecycle.internal.builder.Builder;
 import org.apache.maven.lifecycle.internal.builder.multithreaded.ConcurrencyDependencyGraph;
@@ -33,9 +34,21 @@ public class TurboBuilder implements Builder {
     private final Logger logger;
 
     @Inject
-    public TurboBuilder(LifecycleModuleBuilder lifecycleModuleBuilder, Logger logger) {
+    public TurboBuilder(
+            DefaultLifecycles defaultLifeCycles,
+            LifecycleModuleBuilder lifecycleModuleBuilder,
+            Logger logger
+    ) {
         this.lifecycleModuleBuilder = lifecycleModuleBuilder;
         this.logger = logger;
+
+        // we patch the default lifecycle in-place
+        defaultLifeCycles.getLifeCycles().forEach(lifecycle -> {
+            if ("default".equals(lifecycle.getId())) {
+                logger.info("Patching default lifecycle 🏎️");
+                DefaultLifecyclePatcher.patchDefaultLifecycle(lifecycle.getPhases());
+            }
+        });
     }
 
     @Override
