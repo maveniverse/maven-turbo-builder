@@ -28,7 +28,7 @@ class TurboMojosExecutionStrategyTest {
             "process-resources",
             "compile",
             "process-classes",
-            // note: already reoredered before test phases
+            // note: already reordered before test phases
             "prepare-package",
             "package",
 
