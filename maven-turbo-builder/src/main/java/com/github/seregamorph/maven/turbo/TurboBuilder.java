@@ -56,10 +56,10 @@ public class TurboBuilder implements Builder {
         this.lifecycleModuleBuilder = lifecycleModuleBuilder;
         this.logger = logger;
 
-        // we patch the default lifecycle in-place
+        // we patch the default lifecycle in-place only when "-b turbo" parameter is specified
         defaultLifeCycles.getLifeCycles().forEach(lifecycle -> {
             if ("default".equals(lifecycle.getId())) {
-                logger.info("Patching default lifecycle 🏎️");
+                logger.warn("Turbo builder: patching default lifecycle 🏎️ (reorder package and test phases)");
                 DefaultLifecyclePatcher.patchDefaultLifecycle(lifecycle.getPhases());
             }
         });
