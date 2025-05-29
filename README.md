@@ -87,3 +87,7 @@ Known limitations:
 * this extension is not compatible with [Apache Maven Build Cache Extension](https://maven.apache.org/extensions/maven-build-cache-extension/)
 * the `test-jar` dependency (compiled test classes of other module) is not supported, because when downstream dependency is
 scheduled to be built, the test-jar is not yet ready. Don't use `test-jar` dependencies in your project
+
+Join discussion:
+* discussed in the [Maven Developer Mailing List](https://lists.apache.org/thread/m8yd6zk3pb2k1ptyy5fs97mykzlzof3w)
+* share your experience and submit [issue](https://github.com/seregamorph/maven-turbo-reactor/issues)
