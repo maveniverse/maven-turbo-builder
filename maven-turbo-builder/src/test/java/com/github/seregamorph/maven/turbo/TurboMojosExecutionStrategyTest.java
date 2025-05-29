@@ -1,5 +1,9 @@
 package com.github.seregamorph.maven.turbo;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.LifecycleExecutionException;
@@ -8,41 +12,36 @@ import org.apache.maven.plugin.MojoExecutionRunner;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class TurboMojosExecutionStrategyTest {
 
     @Test
     public void shouldReorderAndSignalFullPhases() throws LifecycleExecutionException {
         List<String> phases = List.of(
-                "validate",
-                "initialize",
-                "generate-sources",
-                "process-sources",
-                "generate-resources",
-                "process-resources",
-                "compile",
-                "process-classes",
-                // note: already reoredered before test phases
-                "prepare-package",
-                "package",
+            "validate",
+            "initialize",
+            "generate-sources",
+            "process-sources",
+            "generate-resources",
+            "process-resources",
+            "compile",
+            "process-classes",
+            // note: already reoredered before test phases
+            "prepare-package",
+            "package",
 
-                "generate-test-sources",
-                "process-test-sources",
-                "generate-test-resources",
-                "process-test-resources",
-                "test-compile",
-                "process-test-classes",
-                "test",
-                "pre-integration-test",
-                "integration-test",
-                "post-integration-test",
-                "verify",
-                "install",
-                "deploy"
+            "generate-test-sources",
+            "process-test-sources",
+            "generate-test-resources",
+            "process-test-resources",
+            "test-compile",
+            "process-test-classes",
+            "test",
+            "pre-integration-test",
+            "integration-test",
+            "post-integration-test",
+            "verify",
+            "install",
+            "deploy"
         );
         var expectedEvents = List.of(
             "exec:validate",

@@ -57,7 +57,7 @@ class DefaultLifecyclePatcher {
 
     static boolean isPackage(String phase) {
         return Arrays.asList("prepare-package", "package")
-                .contains(phase);
+            .contains(phase);
     }
 
     static boolean isTest(String phase) {
@@ -65,9 +65,9 @@ class DefaultLifecyclePatcher {
         // "test-compile", "process-test-classes", "test", "pre-integration-test", "integration-test",
         // "post-integration-test"
         return "test".equals(phase)
-                || phase.contains("-test-")
-                || phase.startsWith("test-")
-                || phase.endsWith("-test");
+            || phase.contains("-test-")
+            || phase.startsWith("test-")
+            || phase.endsWith("-test");
     }
 
     private DefaultLifecyclePatcher() {
