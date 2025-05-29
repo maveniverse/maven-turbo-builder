@@ -14,6 +14,9 @@ import org.slf4j.LoggerFactory;
 @Named
 public class TurboMavenLifecycleParticipant extends AbstractMavenLifecycleParticipant {
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
+
     private static final Logger logger = LoggerFactory.getLogger(TurboMavenLifecycleParticipant.class);
 
     @Override
@@ -30,9 +33,9 @@ public class TurboMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
         String builderId = session.getRequest().getBuilderId();
         if (TurboBuilder.BUILDER_TURBO.equals(builderId)) {
             if (session.getRequest().getGoals().contains("package")) {
-                logger.warn("package phase is requested in combination with turbo builder.\n"
-                    + "Please note, that compiling and running test is not included in execution\n"
-                    + "because of phase reordering. To run tests, use test goal (also includes package)\n"
+                logger.warn("package phase is requested in combination with turbo builder (`-b turbo` parameter).\n"
+                    + "Please note, that " + ANSI_RED + "compiling and running tests is not included in the execution" + ANSI_RESET + "\n"
+                    + "because of phase reordering. To run tests, use test or verify phase (also includes package)\n"
                     + "instead of package.");
             }
         }
