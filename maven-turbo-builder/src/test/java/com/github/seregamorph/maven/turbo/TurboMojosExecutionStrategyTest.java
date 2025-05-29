@@ -12,6 +12,9 @@ import org.apache.maven.plugin.MojoExecutionRunner;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 
+/**
+ * @author Sergey Chernov
+ */
 class TurboMojosExecutionStrategyTest {
 
     @Test

@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+/**
+ * @author Sergey Chernov
+ */
 class DefaultLifecyclePatcherTest {
 
     @Test
