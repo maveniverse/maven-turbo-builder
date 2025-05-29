@@ -1,21 +1,38 @@
 package com.github.seregamorph.maven.test.builder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.lifecycle.internal.*;
-import org.apache.maven.lifecycle.internal.builder.Builder;
-import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.logging.Logger;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.lifecycle.internal.BuildThreadFactory;
+import org.apache.maven.lifecycle.internal.LifecycleModuleBuilder;
+import org.apache.maven.lifecycle.internal.ProjectBuildList;
+import org.apache.maven.lifecycle.internal.ProjectSegment;
+import org.apache.maven.lifecycle.internal.ReactorBuildStatus;
+import org.apache.maven.lifecycle.internal.ReactorContext;
+import org.apache.maven.lifecycle.internal.TaskSegment;
+import org.apache.maven.lifecycle.internal.builder.Builder;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.logging.Logger;
 
 /**
  * Based on simplified code from

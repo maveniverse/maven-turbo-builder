@@ -1,5 +1,9 @@
 package com.github.seregamorph.maven.turbo;
 
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.LifecycleExecutionException;
 import org.apache.maven.plugin.DefaultMojosExecutionStrategy;
@@ -8,11 +12,6 @@ import org.apache.maven.plugin.MojoExecutionRunner;
 import org.apache.maven.plugin.MojosExecutionStrategy;
 import org.codehaus.plexus.logging.Logger;
 import org.eclipse.sisu.Priority;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import java.util.List;
 
 /**
  * @author Sergey Chernov

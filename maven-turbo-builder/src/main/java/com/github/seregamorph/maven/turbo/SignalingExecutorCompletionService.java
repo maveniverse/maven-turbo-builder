@@ -1,11 +1,16 @@
 package com.github.seregamorph.maven.turbo;
 
-import org.apache.maven.project.MavenProject;
-
 import java.util.Objects;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import org.apache.maven.project.MavenProject;
 
 /**
  * @author Sergey Chernov
