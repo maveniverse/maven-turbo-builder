@@ -12,8 +12,8 @@ See presentation [board](https://miro.com/app/board/uXjVLYUPRas=/?share_link_id=
 This extension suggests different Maven reactor scheduler behaviour via custom Builder.
 By default, to build any module in a multi-module project Maven first resolves and executes all phases of upstream
 dependencies. This is a fundamental behaviour which is built-in and strongly enforced because of back compatibility.
-This significantly reduces possible parallelism, in a multi-core system cores are loaded uneven. To enhance parallelism
-this extension does two things:
+This significantly reduces possible parallelism and in a multi-core system cores are loaded unevenly. To enhance
+parallelism this extension does two things:
 * change the order of `*test*` phases and `*package*`, `package` is executed before `test` (not after as default)
 * schedule module build of downstream dependencies when package phase was executed, not waiting for all phases (like
   `test`, `integration-test`, `install`, `deploy`, etc.)
@@ -33,7 +33,7 @@ To set up the extension add to `.mvn/extensions.xml` in the root of the project
         <!-- https://github.com/seregamorph/maven-turbo-reactor -->
         <groupId>com.github.seregamorph</groupId>
         <artifactId>maven-turbo-builder</artifactId>
-        <version>0.2</version>
+        <version>0.3</version>
     </extension>
 </extensions>
 ```
@@ -44,7 +44,8 @@ mvn clean verify -b turbo
 ```
 
 Example adoption:
-* [Maven Surefire](https://github.com/seregamorph/maven-surefire/pull/1)
+* [Maven Surefire, in combination with Maven Surefire Cached extension](https://github.com/seregamorph/maven-surefire/pull/2) (20% faster build)
+* [Maven Surefire, in combination with Develocity Extension](https://github.com/seregamorph/maven-surefire/pull/1) (20% faster build)
 
 Compatibility:
 * this extension can be used with [Maven Surefire Cached Extension](https://github.com/seregamorph/maven-surefire-cached)
