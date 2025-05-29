@@ -26,6 +26,38 @@ schedule it in a more efficient way:
 
 <img src="maven-turbo-builder/doc/timelines.png" alt="Timelines" width="700"/>
 
+The phases are now reordered:
+
+<img src="maven-turbo-builder/doc/phases_reordered.png" alt="Timelines" width="700"/>
+
+You can check the order of phases with Turbo builder enabled:
+```shell
+mvn org.codehaus.mojo:buildplan-maven-plugin:list -b turbo
+```
+the `package` phase now goes before `test-compile` and `test`:
+```
+-----------------------------------------------------------------------------------------------------------
+PHASE                  | PLUGIN                        | VERSION | GOAL          | EXECUTION ID            
+-----------------------------------------------------------------------------------------------------------
+validate               | maven-enforcer-plugin         | 3.5.0   | enforce       | enforce-bytecode-version
+validate               | maven-enforcer-plugin         | 3.5.0   | enforce       | enforce-maven-version   
+validate               | maven-enforcer-plugin         | 3.5.0   | enforce       | enforce-java-version    
+initialize             | jacoco-maven-plugin           | 0.8.13  | prepare-agent | jacoco-agent            
+verify                 | maven-checkstyle-plugin       | 3.6.0   | check         | checkstyle-check        
+process-sources        | spotless-maven-plugin         | 2.44.3  | apply         | default                 
+generate-resources     | maven-remote-resources-plugin | 3.3.0   | process       | process-resource-bundles
+process-resources      | maven-resources-plugin        | 3.3.1   | resources     | default-resources       
+validate               | apache-rat-plugin             | 0.16.1  | check         | rat-check               
+compile                | maven-compiler-plugin         | 3.14.0  | compile       | default-compile         
+package                | maven-jar-plugin              | 3.4.2   | jar           | default-jar             
+process-test-resources | maven-resources-plugin        | 3.3.1   | testResources | default-testResources   
+test-compile           | maven-compiler-plugin         | 3.14.0  | testCompile   | default-testCompile     
+test                   | maven-surefire-plugin         | 3.5.2   | test          | default-test            
+process-test-classes   | animal-sniffer-maven-plugin   | 1.24    | check         | signature-check         
+install                | maven-install-plugin          | 3.1.4   | install       | default-install         
+deploy                 | maven-deploy-plugin           | 3.1.4   | deploy        | default-deploy          
+```
+
 To set up the extension add to `.mvn/extensions.xml` in the root of the project
 ```xml
 <extensions>
@@ -44,8 +76,8 @@ mvn clean verify -b turbo
 ```
 
 Example adoption:
-* [Maven Surefire, in combination with Maven Surefire Cached extension](https://github.com/seregamorph/maven-surefire/pull/2) (20% faster build)
-* [Maven Surefire, in combination with Develocity Extension](https://github.com/seregamorph/maven-surefire/pull/1) (20% faster build)
+* [Maven Surefire, in combination with Maven Surefire Cached extension](https://github.com/seregamorph/maven-surefire/pull/2) (20% faster build + cache complementary)
+* [Maven Surefire, in combination with Develocity Extension](https://github.com/seregamorph/maven-surefire/pull/1) (20% faster build + cache complementary)
 
 Compatibility:
 * this extension can be used with [Maven Surefire Cached Extension](https://github.com/seregamorph/maven-surefire-cached)
