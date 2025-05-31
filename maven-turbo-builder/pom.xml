@@ -10,7 +10,7 @@
 
     <artifactId>maven-turbo-builder</artifactId>
     <packaging>jar</packaging>
-
+    <name>maven-turbo-builder</name>
     <description>
         Maven Extension for efficient multi-module build scheduling
     </description>

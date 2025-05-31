@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>maven-local-workspace-reader</artifactId>
+    <name>maven-local-workspace-reader</name>
 
     <dependencies>
         <dependency>

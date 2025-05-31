@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>maven-simple-parallel-builder</artifactId>
+    <name>maven-simple-parallel-builder</name>
 
     <dependencies>
         <dependency>

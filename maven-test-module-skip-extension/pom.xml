@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>maven-test-module-skip-extension</artifactId>
+    <name>maven-test-module-skip-extension</name>
 
     <dependencies>
         <dependency>

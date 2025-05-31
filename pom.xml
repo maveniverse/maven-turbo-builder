@@ -6,7 +6,7 @@
     <artifactId>maven-turbo-reactor</artifactId>
     <version>0.4-SNAPSHOT</version>
     <packaging>pom</packaging>
-
+    <name>maven-turbo-reactor</name>
     <description>
         Maven extensions to boost multi-module builds
     </description>
