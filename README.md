@@ -74,6 +74,7 @@ To run build with custom Builder:
 ```shell
 mvn clean verify -b turbo
 ```
+Or specify `-bturbo` in the `.mvn/maven.config` file under root of your project to use by default.
 
 Example adoption:
 * [Maven Surefire, in combination with Maven Surefire Cached extension](https://github.com/seregamorph/maven-surefire/pull/2) (20% faster build + cache complementary)

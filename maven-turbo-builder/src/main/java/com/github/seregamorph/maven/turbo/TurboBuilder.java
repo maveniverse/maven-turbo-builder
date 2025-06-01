@@ -33,6 +33,7 @@ import org.codehaus.plexus.logging.Logger;
  * {@link org.apache.maven.lifecycle.internal.builder.multithreaded.MultiThreadedBuilder}
  *
  * Use "-b turbo" maven parameters like "mvn clean verify -b turbo" to activate.
+ * Or specify "-bturbo" in the .mvn/maven.config file to use by default.
  * Schedules downstream dependencies right after the package phase, also it's coupled with
  * {@link TurboMojosExecutionStrategy} reordering package and test phases.
  *
