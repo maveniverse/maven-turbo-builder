@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Build start / finish interceptor that prints a warning to avoid confusion.
+ *
  * @author Sergey Chernov
  */
 @SessionScoped
@@ -33,8 +35,9 @@ public class TurboMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
         String builderId = session.getRequest().getBuilderId();
         if (TurboBuilder.BUILDER_TURBO.equals(builderId)) {
             if (session.getRequest().getGoals().contains("package")) {
-                logger.warn("package phase is requested in combination with turbo builder (`-b turbo` parameter).\n"
-                    + "Please note, that " + ANSI_RED + "compiling and running tests is not included in the execution" + ANSI_RESET + "\n"
+                logger.warn("package phase is requested in combination with turbo builder (`-bturbo` parameter \n"
+                    + "in the command line or .mvn/maven.config). Please note, that \n"
+                    + ANSI_RED + "compiling and running tests is not included in the execution" + ANSI_RESET + "\n"
                     + "because of phase reordering. To run tests, use test or verify phase (also includes package)\n"
                     + "instead of package.");
             }
