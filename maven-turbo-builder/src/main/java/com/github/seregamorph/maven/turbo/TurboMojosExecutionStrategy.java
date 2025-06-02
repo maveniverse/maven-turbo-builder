@@ -1,20 +1,20 @@
 package com.github.seregamorph.maven.turbo;
 
+import static com.github.seregamorph.maven.turbo.DefaultLifecyclePatcher.isPackage;
+import static com.github.seregamorph.maven.turbo.DefaultLifecyclePatcher.isTest;
+import static com.github.seregamorph.maven.turbo.MavenPropertyUtils.getProperty;
+import static com.github.seregamorph.maven.turbo.MavenPropertyUtils.isEmptyOrTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.LifecycleExecutionException;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionRunner;
 import org.apache.maven.plugin.MojosExecutionStrategy;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.project.MavenProject;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.github.seregamorph.maven.turbo.DefaultLifecyclePatcher.isPackage;
-import static com.github.seregamorph.maven.turbo.DefaultLifecyclePatcher.isTest;
-import static com.github.seregamorph.maven.turbo.MavenPropertyUtils.getProperty;
-import static com.github.seregamorph.maven.turbo.MavenPropertyUtils.isEmptyOrTrue;
 
 /**
  * @author Sergey Chernov
@@ -42,8 +42,14 @@ public class TurboMojosExecutionStrategy implements MojosExecutionStrategy {
         boolean signaled = skipTurboSignal;
         for (MojoExecution mojoExecution : mojos) {
             if (!signaled && packageMojos.isEmpty()) {
-                String lifecyclePhase = mojoExecution.getLifecyclePhase();
-                if (lifecyclePhase != null && isTest(lifecyclePhase)) {
+                String phase = mojoExecution.getLifecyclePhase();
+                if (phase == null) {
+                    MojoDescriptor mojoDescriptor = mojoExecution.getMojoDescriptor();
+                    if (mojoDescriptor != null) {
+                        phase = mojoDescriptor.getPhase();
+                    }
+                }
+                if (phase != null && isTest(phase)) {
                     signaled = true;
                     // signal before tests
                     SignalingExecutorCompletionService.signal(currentProject);
