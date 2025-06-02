@@ -36,10 +36,10 @@ public class TurboMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
         if (TurboBuilder.BUILDER_TURBO.equals(builderId)) {
             if (session.getRequest().getGoals().contains("package")) {
                 logger.warn("package phase is requested in combination with turbo builder (`-bturbo` parameter \n"
-                    + "in the command line or .mvn/maven.config). Please note, that \n"
+                    + "in the command line or .mvn/maven.config). Please note, that\n"
                     + ANSI_RED + "compiling and running tests is not included in the execution" + ANSI_RESET + "\n"
-                    + "because of phase reordering. To run tests, use test or verify phase (also includes package)\n"
-                    + "instead of package.");
+                    + "because of phase reordering.\n"
+                    + "To run tests, use `test`, `verify` or `install` phase instead of `package`.");
             }
         }
     }
