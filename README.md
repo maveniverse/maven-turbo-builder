@@ -2,10 +2,7 @@
 [![Maven Central Version](https://img.shields.io/maven-central/v/com.github.seregamorph/maven-turbo-reactor?style=flat-square)](https://central.sonatype.com/artifact/com.github.seregamorph/maven-turbo-reactor/overview)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-# Maven Turbo Reactor
-This project contains Maven extensions to boost builds.
-
-## Maven Turbo builder
+# Maven Turbo Builder
 
 See presentation [board](https://miro.com/app/board/uXjVLYUPRas=/?share_link_id=929861907417)
 
@@ -65,7 +62,7 @@ To set up the extension add to `.mvn/extensions.xml` in the root of the project
         <!-- https://github.com/maven-turbo-reactor/maven-turbo-builder -->
         <groupId>com.github.seregamorph</groupId>
         <artifactId>maven-turbo-builder</artifactId>
-        <version>0.5</version>
+        <version>0.6</version>
     </extension>
 </extensions>
 ```
