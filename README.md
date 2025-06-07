@@ -24,11 +24,11 @@ See this example of three modules depending on each other: `test-utils`, `core` 
 multi-module, Maven by default will build it in a single core even with `-T1C` parameter. This extension will
 schedule it in a more efficient way:
 
-<img src="maven-turbo-builder/doc/timelines.png" alt="Timelines" width="700"/>
+<img src="doc/timelines.png" alt="Timelines" width="700"/>
 
 The phases are now reordered:
 
-<img src="maven-turbo-builder/doc/phases_reordered.png" alt="Timelines" width="700"/>
+<img src="doc/phases_reordered.png" alt="Timelines" width="700"/>
 
 You can check the order of phases with Turbo builder enabled:
 ```shell
@@ -62,7 +62,7 @@ To set up the extension add to `.mvn/extensions.xml` in the root of the project
 ```xml
 <extensions>
     <extension>
-        <!-- https://github.com/seregamorph/maven-turbo-reactor -->
+        <!-- https://github.com/maven-turbo-reactor/maven-turbo-builder -->
         <groupId>com.github.seregamorph</groupId>
         <artifactId>maven-turbo-builder</artifactId>
         <version>0.5</version>
@@ -91,4 +91,4 @@ scheduled to be built, the test-jar is not yet ready. Don't use `test-jar` depen
 
 Join discussion:
 * discussed in the [Maven Developer Mailing List](https://lists.apache.org/thread/m8yd6zk3pb2k1ptyy5fs97mykzlzof3w)
-* share your experience and submit [issue](https://github.com/seregamorph/maven-turbo-reactor/issues)
+* share your experience and submit [issue](https://github.com/maven-turbo-reactor/maven-turbo-builder/issues)
