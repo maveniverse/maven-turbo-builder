@@ -74,7 +74,10 @@ To run build with custom Builder:
 ```shell
 mvn clean verify -b turbo
 ```
-Or specify `-bturbo` in the `.mvn/maven.config` file under root of your project to use by default.
+To enable this extension by default, add line to `.mvn/maven.config` under root of your project:
+```
+-bturbo
+```
 
 Example adoption:
 * [Maven Surefire, in combination with Maven Surefire Cached extension](https://github.com/seregamorph/maven-surefire/pull/2) (20% faster build + cache complementary)
@@ -87,7 +90,7 @@ Compatibility:
 Known limitations:
 * this extension is not compatible with [Apache Maven Build Cache Extension](https://maven.apache.org/extensions/maven-build-cache-extension/)
 * the `test-jar` dependency (compiled test classes of other module) is not supported, because when downstream dependency is
-scheduled to be built, the test-jar is not yet ready. Don't use `test-jar` dependencies in your project
+scheduled to be built, the test-jar is not yet ready. Don't use `test-jar` dependencies in your project. 
 
 Join discussion:
 * discussed in the [Maven Developer Mailing List](https://lists.apache.org/thread/m8yd6zk3pb2k1ptyy5fs97mykzlzof3w)
