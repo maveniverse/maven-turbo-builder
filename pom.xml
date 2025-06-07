@@ -64,7 +64,6 @@
     </properties>
 
     <modules>
-        <module>maven-local-workspace-reader</module>
         <module>maven-simple-parallel-builder</module>
         <module>maven-turbo-builder</module>
         <module>maven-test-module-skip-extension</module>
