@@ -65,7 +65,6 @@
 
     <modules>
         <module>maven-turbo-builder</module>
-        <module>maven-test-module-skip-extension</module>
     </modules>
 
     <build>
