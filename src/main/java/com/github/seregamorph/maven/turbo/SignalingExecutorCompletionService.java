@@ -6,7 +6,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -41,9 +40,9 @@ class SignalingExecutorCompletionService {
         signaler.accept(project);
     }
 
-    Future<?> submit(Callable<MavenProject> buildCallable) {
+    Future<MavenProject> submit(Callable<MavenProject> buildCallable) {
         Objects.requireNonNull(buildCallable);
-        return executor.submit(new FutureTask<>(() -> {
+        return executor.submit(() -> {
             AtomicBoolean signaled = new AtomicBoolean(false);
             currentSignaler.set(mavenProject -> {
                 // No race condition here with "if (!signaled.get())" block, because it's the same thread.
@@ -67,7 +66,7 @@ class SignalingExecutorCompletionService {
             } finally {
                 currentSignaler.remove();
             }
-        }));
+        });
     }
 
     MavenProject takeSignaled() throws InterruptedException, ExecutionException {

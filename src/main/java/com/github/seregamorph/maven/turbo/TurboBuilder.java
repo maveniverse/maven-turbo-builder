@@ -121,7 +121,7 @@ public class TurboBuilder implements Builder {
         Set<String> duplicateArtifactIds = gatherDuplicateArtifactIds(projectBuildList.keySet());
 
         // collect all submitted tasks to join them at the end
-        List<Future<?>> tasks = new ArrayList<>();
+        List<Future<MavenProject>> tasks = new ArrayList<>();
         // schedule independent projects
         for (MavenProject mavenProject : analyzer.getRootSchedulableBuilds()) {
             ProjectSegment projectSegment = projectBuildList.get(mavenProject);
@@ -160,7 +160,7 @@ public class TurboBuilder implements Builder {
             }
         }
 
-        for (Future<?> task : tasks) {
+        for (Future<MavenProject> task : tasks) {
             try {
                 task.get();
             } catch (InterruptedException | ExecutionException e) {
