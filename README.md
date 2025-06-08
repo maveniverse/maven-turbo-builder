@@ -1,5 +1,5 @@
 
-[![Maven Central Version](https://img.shields.io/maven-central/v/com.github.seregamorph/maven-turbo-reactor?style=flat-square)](https://central.sonatype.com/artifact/com.github.seregamorph/maven-turbo-reactor/overview)
+[![Maven Central Version](https://img.shields.io/maven-central/v/com.github.seregamorph/maven-turbo-builder?style=flat-square)](https://central.sonatype.com/artifact/com.github.seregamorph/maven-turbo-builder/overview)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 # Maven Turbo Builder
