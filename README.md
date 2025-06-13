@@ -69,7 +69,7 @@ To set up the extension add to `.mvn/extensions.xml` in the root of the project
 
 To run build with custom Builder:
 ```shell
-mvn clean verify -b turbo
+mvn clean verify -b turbo -T1C
 ```
 To enable this extension by default, add line to `.mvn/maven.config` under root of your project:
 ```
