@@ -54,6 +54,7 @@ public class TurboBuilder implements Builder {
     public TurboBuilder(
             DefaultLifecycles defaultLifeCycles,
             LifecycleModuleBuilder lifecycleModuleBuilder,
+            TurboBuilderConfig config,
             Logger logger
     ) {
         this.lifecycleModuleBuilder = lifecycleModuleBuilder;
@@ -63,7 +64,7 @@ public class TurboBuilder implements Builder {
         defaultLifeCycles.getLifeCycles().forEach(lifecycle -> {
             if ("default".equals(lifecycle.getId())) {
                 logger.warn("Turbo builder: patching default lifecycle 🏎️ (reorder package and test phases)");
-                DefaultLifecyclePatcher.patchDefaultLifecycle(lifecycle.getPhases());
+                DefaultLifecyclePatcher.patchDefaultLifecycle(config, lifecycle.getPhases());
             }
         });
     }
