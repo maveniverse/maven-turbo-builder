@@ -3,7 +3,7 @@ package com.github.seregamorph.maven.turbo;
 import static com.github.seregamorph.maven.turbo.DefaultLifecyclePatcher.isAnyTest;
 import static com.github.seregamorph.maven.turbo.DefaultLifecyclePatcher.isPackage;
 import static com.github.seregamorph.maven.turbo.MavenPropertyUtils.getProperty;
-import static com.github.seregamorph.maven.turbo.MavenPropertyUtils.isEmptyOrTrue;
+import static com.github.seregamorph.maven.turbo.MavenPropertyUtils.isTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class TurboMojosExecutionStrategy implements MojosExecutionStrategy {
         MavenProject currentProject = session.getCurrentProject();
         // There can be scenarios when we use TurboBuilder as default, but disable per project, property or via profile,
         // when it's known that the downstream dependencies should be only scheduled when all phases are completed.
-        boolean skipTurboSignal = isEmptyOrTrue(getProperty(session, currentProject, "skipTurboSignal"));
+        boolean skipTurboSignal = isTrue(getProperty(session, currentProject, "skipTurboSignal"));
         boolean signaled = skipTurboSignal;
         for (MojoExecution mojoExecution : mojos) {
             if (!signaled && packageMojos.isEmpty()) {

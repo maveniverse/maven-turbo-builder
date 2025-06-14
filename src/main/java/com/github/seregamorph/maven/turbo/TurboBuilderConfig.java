@@ -12,8 +12,8 @@ public class TurboBuilderConfig {
 
     @Inject
     public TurboBuilderConfig(MavenSession session) {
-        String turboTestCompile = session.getSystemProperties().getProperty("turboTestCompile");
-        this.turboTestCompile = MavenPropertyUtils.isEmptyOrTrue(turboTestCompile);
+        String turboTestCompile = MavenPropertyUtils.getProperty(session, "turboTestCompile");
+        this.turboTestCompile = MavenPropertyUtils.isTrue(turboTestCompile);
     }
 
     TurboBuilderConfig(boolean turboTestCompile) {

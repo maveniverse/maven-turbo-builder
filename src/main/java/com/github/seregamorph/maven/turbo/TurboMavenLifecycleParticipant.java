@@ -1,5 +1,8 @@
 package com.github.seregamorph.maven.turbo;
 
+import static com.github.seregamorph.maven.turbo.MavenPropertyUtils.getProperty;
+import static com.github.seregamorph.maven.turbo.MavenPropertyUtils.isTrue;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -81,10 +84,9 @@ public class TurboMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 
     private void checkBuilderAndPhase(MavenSession session) {
         // skip both compiling and running tests
-        boolean mavenTestSkip = MavenPropertyUtils.isEmptyOrTrue(session.getSystemProperties()
-            .getProperty("maven.test.skip"));
+        boolean mavenTestSkip = isTrue(getProperty(session, "maven.test.skip"));
         // skip only running tests
-        boolean skipTests = MavenPropertyUtils.isEmptyOrTrue(session.getSystemProperties().getProperty("skipTests"));
+        boolean skipTests = isTrue(getProperty(session, "skipTests"));
         String skippedReorderedPhases;
         if (mavenTestSkip) {
             // If there is `-Dmaven.test.skip`, don't bother with warning
