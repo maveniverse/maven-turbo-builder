@@ -62,7 +62,7 @@ To set up the extension add to `.mvn/extensions.xml` in the root of the project
         <!-- https://github.com/maven-turbo-reactor/maven-turbo-builder -->
         <groupId>com.github.seregamorph</groupId>
         <artifactId>maven-turbo-builder</artifactId>
-        <version>0.7</version>
+        <version>0.8</version>
     </extension>
 </extensions>
 ```
