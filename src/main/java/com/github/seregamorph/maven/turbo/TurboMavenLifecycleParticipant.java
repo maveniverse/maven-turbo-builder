@@ -43,6 +43,7 @@ public class TurboMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
         if (isTurboBuilder(session)) {
             checkTestJarArtifacts(session);
             checkBuilderAndPhase(session);
+            checkMavenVersion();
         }
     }
 
@@ -50,6 +51,7 @@ public class TurboMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
     public void afterSessionEnd(MavenSession session) {
         if (isTurboBuilder(session)) {
             checkBuilderAndPhase(session);
+            checkMavenVersion();
         }
     }
 
@@ -106,6 +108,23 @@ public class TurboMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
                     + "{}To run tests, use `test`, `verify` or `install` phase instead of `package`.",
                 skippedReorderedPhases,
                 config.isTurboTestCompile() ? "" : "To compile tests, run with parameter `-DturboTestCompile`.\n");
+        }
+    }
+
+    private static void checkMavenVersion() {
+        boolean mojosExecutionStrategySupported;
+        try {
+            Class.forName("org.apache.maven.plugin.MojosExecutionStrategy", true,
+                AbstractMavenLifecycleParticipant.class.getClassLoader());
+            mojosExecutionStrategySupported = true;
+        } catch (ClassNotFoundException e) {
+            mojosExecutionStrategySupported = false;
+        }
+
+        if (!mojosExecutionStrategySupported) {
+            String mavenCoreVersion = AbstractMavenLifecycleParticipant.class.getPackage().getImplementationVersion();
+            logger.warn("Maven version {} is not supported by Turbo builder (`-bturbo` parameter in the command line "
+                + "or .mvn/maven.config). Please use Maven 3.9.0 or newer.", mavenCoreVersion);
         }
     }
 
