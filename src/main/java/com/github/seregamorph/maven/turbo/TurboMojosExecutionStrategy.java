@@ -22,17 +22,14 @@ import org.apache.maven.project.MavenProject;
 public class TurboMojosExecutionStrategy implements MojosExecutionStrategy {
 
     @Override
-    public void execute(
-        List<MojoExecution> mojos,
-        MavenSession session,
-        MojoExecutionRunner mojoRunner
-    ) throws LifecycleExecutionException {
+    public void execute(List<MojoExecution> mojos, MavenSession session, MojoExecutionRunner mojoRunner)
+            throws LifecycleExecutionException {
         List<MojoExecution> packageMojos = mojos.stream()
-            .filter(mojo -> {
-                String lifecyclePhase = mojo.getLifecyclePhase();
-                return lifecyclePhase != null && isPackage(lifecyclePhase);
-            })
-            .collect(Collectors.toList());
+                .filter(mojo -> {
+                    String lifecyclePhase = mojo.getLifecyclePhase();
+                    return lifecyclePhase != null && isPackage(lifecyclePhase);
+                })
+                .collect(Collectors.toList());
 
         List<MojoExecution> executedPackageMojos = new ArrayList<>();
         MavenProject currentProject = session.getCurrentProject();

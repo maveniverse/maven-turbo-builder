@@ -55,8 +55,7 @@ public class TurboBuilder implements Builder {
             DefaultLifecycles defaultLifeCycles,
             LifecycleModuleBuilder lifecycleModuleBuilder,
             TurboBuilderConfig config,
-            Logger logger
-    ) {
+            Logger logger) {
         this.lifecycleModuleBuilder = lifecycleModuleBuilder;
         this.logger = logger;
 
@@ -71,17 +70,17 @@ public class TurboBuilder implements Builder {
 
     @Override
     public void build(
-        MavenSession session,
-        ReactorContext reactorContext,
-        ProjectBuildList projectBuilds,
-        List<TaskSegment> taskSegments,
-        ReactorBuildStatus reactorBuildStatus
-    ) throws InterruptedException {
+            MavenSession session,
+            ReactorContext reactorContext,
+            ProjectBuildList projectBuilds,
+            List<TaskSegment> taskSegments,
+            ReactorBuildStatus reactorBuildStatus)
+            throws InterruptedException {
         int nThreads = Math.min(
-            session.getRequest().getDegreeOfConcurrency(),
-            session.getProjects().size());
+                session.getRequest().getDegreeOfConcurrency(),
+                session.getProjects().size());
         logger.info("TurboBuilder will use " + nThreads + " threads to build "
-            + session.getProjects().size() + " modules");
+                + session.getProjects().size() + " modules");
         boolean parallel = nThreads > 1;
         // Propagate the parallel flag to the root session and all of the cloned sessions in each project segment
         session.setParallel(parallel);
@@ -89,13 +88,19 @@ public class TurboBuilder implements Builder {
             segment.getSession().setParallel(parallel);
         }
         // executor supporting task ordering, prioritize building modules that have more downstream dependencies
-        ExecutorService executor = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-            new PriorityBlockingQueue<>(), new BuildThreadFactory()) {
-            @Override
-            protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
-                return new OrderedFutureTask<>((OrderedCallable<T>) callable);
-            }
-        };
+        ExecutorService executor =
+                new ThreadPoolExecutor(
+                        nThreads,
+                        nThreads,
+                        0L,
+                        TimeUnit.MILLISECONDS,
+                        new PriorityBlockingQueue<>(),
+                        new BuildThreadFactory()) {
+                    @Override
+                    protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
+                        return new OrderedFutureTask<>((OrderedCallable<T>) callable);
+                    }
+                };
         SignalingExecutorCompletionService service = new SignalingExecutorCompletionService(executor);
 
         for (TaskSegment taskSegment : taskSegments) {
@@ -103,9 +108,9 @@ public class TurboBuilder implements Builder {
             Map<MavenProject, ProjectSegment> projectBuildMap = projectBuilds.selectSegment(taskSegment);
             try {
                 ConcurrencyDependencyGraph analyzer =
-                    new ConcurrencyDependencyGraph(segmentProjectBuilds, session.getProjectDependencyGraph());
+                        new ConcurrencyDependencyGraph(segmentProjectBuilds, session.getProjectDependencyGraph());
                 multiThreadedProjectTaskSegmentBuild(
-                    analyzer, reactorContext, session, service, taskSegment, projectBuildMap);
+                        analyzer, reactorContext, session, service, taskSegment, projectBuildMap);
                 if (reactorContext.getReactorBuildStatus().isHalted()) {
                     break;
                 }
@@ -120,13 +125,12 @@ public class TurboBuilder implements Builder {
     }
 
     private void multiThreadedProjectTaskSegmentBuild(
-        ConcurrencyDependencyGraph analyzer,
-        ReactorContext reactorContext,
-        MavenSession rootSession,
-        SignalingExecutorCompletionService service,
-        TaskSegment taskSegment,
-        Map<MavenProject, ProjectSegment> projectBuildList
-    ) {
+            ConcurrencyDependencyGraph analyzer,
+            ReactorContext reactorContext,
+            MavenSession rootSession,
+            SignalingExecutorCompletionService service,
+            TaskSegment taskSegment,
+            Map<MavenProject, ProjectSegment> projectBuildList) {
         // gather artifactIds which are not unique so that the respective thread names can be extended with the groupId
         Set<String> duplicateArtifactIds = gatherDuplicateArtifactIds(projectBuildList.keySet());
 
@@ -136,10 +140,10 @@ public class TurboBuilder implements Builder {
         for (MavenProject mavenProject : analyzer.getRootSchedulableBuilds()) {
             ProjectSegment projectSegment = projectBuildList.get(mavenProject);
             logger.debug("Scheduling: " + projectSegment.getProject());
-            Callable<MavenProject> cb = createBuildCallable(
-                rootSession, projectSegment, reactorContext, taskSegment, duplicateArtifactIds);
-            List<MavenProject> downstreamDependencies = rootSession.getProjectDependencyGraph()
-                .getDownstreamProjects(mavenProject, false);
+            Callable<MavenProject> cb =
+                    createBuildCallable(rootSession, projectSegment, reactorContext, taskSegment, duplicateArtifactIds);
+            List<MavenProject> downstreamDependencies =
+                    rootSession.getProjectDependencyGraph().getDownstreamProjects(mavenProject, false);
             // negate size for descending order
             tasks.add(service.submit(-downstreamDependencies.size(), cb));
         }
@@ -159,13 +163,9 @@ public class TurboBuilder implements Builder {
                         ProjectSegment scheduledDependent = projectBuildList.get(mavenProject);
                         logger.debug("Scheduling: " + scheduledDependent);
                         Callable<MavenProject> cb = createBuildCallable(
-                            rootSession,
-                            scheduledDependent,
-                            reactorContext,
-                            taskSegment,
-                            duplicateArtifactIds);
-                        List<MavenProject> downstreamDependencies = rootSession.getProjectDependencyGraph()
-                            .getDownstreamProjects(mavenProject, false);
+                                rootSession, scheduledDependent, reactorContext, taskSegment, duplicateArtifactIds);
+                        List<MavenProject> downstreamDependencies =
+                                rootSession.getProjectDependencyGraph().getDownstreamProjects(mavenProject, false);
                         tasks.add(service.submit(-downstreamDependencies.size(), cb));
                     }
                 }
@@ -186,25 +186,24 @@ public class TurboBuilder implements Builder {
     }
 
     private Callable<MavenProject> createBuildCallable(
-        MavenSession rootSession,
-        ProjectSegment projectBuild,
-        ReactorContext reactorContext,
-        TaskSegment taskSegment,
-        Set<String> duplicateArtifactIds
-    ) {
+            MavenSession rootSession,
+            ProjectSegment projectBuild,
+            ReactorContext reactorContext,
+            TaskSegment taskSegment,
+            Set<String> duplicateArtifactIds) {
         return () -> {
             final Thread currentThread = Thread.currentThread();
             final String originalThreadName = currentThread.getName();
             final MavenProject project = projectBuild.getProject();
 
             final String threadNameSuffix = duplicateArtifactIds.contains(project.getArtifactId())
-                ? project.getGroupId() + ":" + project.getArtifactId()
-                : project.getArtifactId();
+                    ? project.getGroupId() + ":" + project.getArtifactId()
+                    : project.getArtifactId();
             currentThread.setName("mvn-turbo-builder-" + threadNameSuffix);
 
             try {
                 lifecycleModuleBuilder.buildProject(
-                    projectBuild.getSession(), rootSession, reactorContext, project, taskSegment);
+                        projectBuild.getSession(), rootSession, reactorContext, project, taskSegment);
 
                 return projectBuild.getProject();
             } finally {

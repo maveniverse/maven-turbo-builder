@@ -20,168 +20,161 @@ class TurboMojosExecutionStrategyTest {
     @Test
     public void shouldReorderAndSignalFullPhasesNoTestJarSupported() throws LifecycleExecutionException {
         List<String> phases = List.of(
-            "validate",
-            "initialize",
-            "generate-sources",
-            "process-sources",
-            "generate-resources",
-            "process-resources",
-            "compile",
-            "process-classes",
-            // note: already reordered before test phases
-            "prepare-package",
-            "package",
-
-            "generate-test-sources",
-            "process-test-sources",
-            "generate-test-resources",
-            "process-test-resources",
-            "test-compile",
-            "process-test-classes",
-            "test",
-            "pre-integration-test",
-            "integration-test",
-            "post-integration-test",
-            "verify",
-            "install",
-            "deploy"
-        );
+                "validate",
+                "initialize",
+                "generate-sources",
+                "process-sources",
+                "generate-resources",
+                "process-resources",
+                "compile",
+                "process-classes",
+                // note: already reordered before test phases
+                "prepare-package",
+                "package",
+                "generate-test-sources",
+                "process-test-sources",
+                "generate-test-resources",
+                "process-test-resources",
+                "test-compile",
+                "process-test-classes",
+                "test",
+                "pre-integration-test",
+                "integration-test",
+                "post-integration-test",
+                "verify",
+                "install",
+                "deploy");
         var expectedEvents = List.of(
-            "exec:validate",
-            "exec:initialize",
-            "exec:generate-sources",
-            "exec:process-sources",
-            "exec:generate-resources",
-            "exec:process-resources",
-            "exec:compile",
-            "exec:process-classes",
-            "exec:prepare-package",
-            "exec:package",
-            "signal",
-            "exec:generate-test-sources",
-            "exec:process-test-sources",
-            "exec:generate-test-resources",
-            "exec:process-test-resources",
-            "exec:test-compile",
-            "exec:process-test-classes",
-            "exec:test",
-            "exec:pre-integration-test",
-            "exec:integration-test",
-            "exec:post-integration-test",
-            "exec:verify",
-            "exec:install",
-            "exec:deploy"
-        );
+                "exec:validate",
+                "exec:initialize",
+                "exec:generate-sources",
+                "exec:process-sources",
+                "exec:generate-resources",
+                "exec:process-resources",
+                "exec:compile",
+                "exec:process-classes",
+                "exec:prepare-package",
+                "exec:package",
+                "signal",
+                "exec:generate-test-sources",
+                "exec:process-test-sources",
+                "exec:generate-test-resources",
+                "exec:process-test-resources",
+                "exec:test-compile",
+                "exec:process-test-classes",
+                "exec:test",
+                "exec:pre-integration-test",
+                "exec:integration-test",
+                "exec:post-integration-test",
+                "exec:verify",
+                "exec:install",
+                "exec:deploy");
         shouldReorderAndSignalImpl(phases, expectedEvents);
     }
 
     @Test
     public void shouldReorderAndSignalFullPhasesTestJarSupported() throws LifecycleExecutionException {
         List<String> phases = List.of(
-            "validate",
-            "initialize",
-            "generate-sources",
-            "process-sources",
-            "generate-resources",
-            "process-resources",
-            "compile",
-            "process-classes",
-            "generate-test-sources",
-            "process-test-sources",
-            "generate-test-resources",
-            "process-test-resources",
-            "test-compile",
-            "process-test-classes",
-            // note: already reordered before test phases
-            "prepare-package",
-            "package",
-            "test",
-            "pre-integration-test",
-            "integration-test",
-            "post-integration-test",
-            "verify",
-            "install",
-            "deploy"
-        );
+                "validate",
+                "initialize",
+                "generate-sources",
+                "process-sources",
+                "generate-resources",
+                "process-resources",
+                "compile",
+                "process-classes",
+                "generate-test-sources",
+                "process-test-sources",
+                "generate-test-resources",
+                "process-test-resources",
+                "test-compile",
+                "process-test-classes",
+                // note: already reordered before test phases
+                "prepare-package",
+                "package",
+                "test",
+                "pre-integration-test",
+                "integration-test",
+                "post-integration-test",
+                "verify",
+                "install",
+                "deploy");
         var expectedEvents = List.of(
-            "exec:validate",
-            "exec:initialize",
-            "exec:generate-sources",
-            "exec:process-sources",
-            "exec:generate-resources",
-            "exec:process-resources",
-            "exec:compile",
-            "exec:process-classes",
-            "exec:generate-test-sources",
-            "exec:process-test-sources",
-            "exec:generate-test-resources",
-            "exec:process-test-resources",
-            "exec:test-compile",
-            "exec:process-test-classes",
-            "exec:prepare-package",
-            "exec:package",
-            "signal",
-            "exec:test",
-            "exec:pre-integration-test",
-            "exec:integration-test",
-            "exec:post-integration-test",
-            "exec:verify",
-            "exec:install",
-            "exec:deploy"
-        );
+                "exec:validate",
+                "exec:initialize",
+                "exec:generate-sources",
+                "exec:process-sources",
+                "exec:generate-resources",
+                "exec:process-resources",
+                "exec:compile",
+                "exec:process-classes",
+                "exec:generate-test-sources",
+                "exec:process-test-sources",
+                "exec:generate-test-resources",
+                "exec:process-test-resources",
+                "exec:test-compile",
+                "exec:process-test-classes",
+                "exec:prepare-package",
+                "exec:package",
+                "signal",
+                "exec:test",
+                "exec:pre-integration-test",
+                "exec:integration-test",
+                "exec:post-integration-test",
+                "exec:verify",
+                "exec:install",
+                "exec:deploy");
         shouldReorderAndSignalImpl(phases, expectedEvents);
     }
 
     @Test
     public void shouldReorderAndSignalSubsetPhasesNoTestJarSupported() throws LifecycleExecutionException {
         List<String> phases = List.of(
-            "validate",
-            "initialize",
-            "generate-sources",
-            "process-sources",
-            "generate-resources",
-            "process-resources",
-            "compile",
-            "process-classes",
-
-            "generate-test-sources",
-            "process-test-sources",
-            "generate-test-resources",
-            "process-test-resources",
-            "test-compile",
-            "process-test-classes",
-            "test"
-        );
+                "validate",
+                "initialize",
+                "generate-sources",
+                "process-sources",
+                "generate-resources",
+                "process-resources",
+                "compile",
+                "process-classes",
+                "generate-test-sources",
+                "process-test-sources",
+                "generate-test-resources",
+                "process-test-resources",
+                "test-compile",
+                "process-test-classes",
+                "test");
         var expectedEvents = List.of(
-            "exec:validate",
-            "exec:initialize",
-            "exec:generate-sources",
-            "exec:process-sources",
-            "exec:generate-resources",
-            "exec:process-resources",
-            "exec:compile",
-            "exec:process-classes",
-            "signal",
-            "exec:generate-test-sources",
-            "exec:process-test-sources",
-            "exec:generate-test-resources",
-            "exec:process-test-resources",
-            "exec:test-compile",
-            "exec:process-test-classes",
-            "exec:test"
-        );
+                "exec:validate",
+                "exec:initialize",
+                "exec:generate-sources",
+                "exec:process-sources",
+                "exec:generate-resources",
+                "exec:process-resources",
+                "exec:compile",
+                "exec:process-classes",
+                "signal",
+                "exec:generate-test-sources",
+                "exec:process-test-sources",
+                "exec:generate-test-resources",
+                "exec:process-test-resources",
+                "exec:test-compile",
+                "exec:process-test-classes",
+                "exec:test");
 
         shouldReorderAndSignalImpl(phases, expectedEvents);
     }
 
-    private static void shouldReorderAndSignalImpl(List<String> phases, List<String> expectedEvents) throws LifecycleExecutionException {
+    private static void shouldReorderAndSignalImpl(List<String> phases, List<String> expectedEvents)
+            throws LifecycleExecutionException {
         var mojos = phases.stream()
-            .map(phase -> {
-                var execution = new MojoExecution(null);
-                execution.setLifecyclePhase(phase);
-                return execution;
-            })
-            .toList();
+                .map(phase -> {
+                    var execution = new MojoExecution(null);
+                    execution.setLifecyclePhase(phase);
+                    return execution;
+                })
+                .toList();
 
         var request = new DefaultMavenExecutionRequest();
         var session = new MavenSession(null, null, request, null);
