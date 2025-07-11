@@ -30,6 +30,5 @@ final class MavenPropertyUtils {
         return "true".equals(value);
     }
 
-    private MavenPropertyUtils() {
-    }
+    private MavenPropertyUtils() {}
 }

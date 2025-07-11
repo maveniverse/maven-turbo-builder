@@ -1,57 +1,130 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.github.seregamorph</groupId>
-        <artifactId>maven-turbo-reactor-parent</artifactId>
-        <version>0.1</version>
-    </parent>
+  <parent>
+    <groupId>eu.maveniverse.maven.parent</groupId>
+    <artifactId>parent</artifactId>
+    <version>40</version>
+  </parent>
 
-    <artifactId>maven-turbo-builder</artifactId>
-    <version>0.9-SNAPSHOT</version>
-    <packaging>jar</packaging>
-    <name>maven-turbo-builder</name>
-    <description>
-        Maven Extension for efficient multi-module build scheduling
-    </description>
+  <groupId>eu.maveniverse.maven.turbo-builder</groupId>
+  <artifactId>maven-turbo-builder</artifactId>
+  <version>0.9-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>maven-turbo-builder</name>
+  <description>Maven Extension for efficient multi-module build scheduling</description>
 
-    <url>https://github.com/maven-turbo-reactor/maven-turbo-builder</url>
+  <url>https://maveniverse.eu/docs/maven-turbo-reactor</url>
 
-    <developers>
-        <developer>
-            <id>seregamorph</id>
-            <name>Sergey Chernov</name>
-            <email>serega.morph[at]gmail.com</email>
-        </developer>
-    </developers>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-    <scm>
-        <url>https://github.com/maven-turbo-reactor/maven-turbo-builder</url>
-        <connection>scm:git:git@github.com:maven-turbo-reactor/maven-turbo-builder.git</connection>
-        <developerConnection>scm:git:git@github.com:maven-turbo-reactor/maven-turbo-builder.git</developerConnection>
-    </scm>
+  <developers>
+    <developer>
+      <id>seregamorph</id>
+      <name>Sergey Chernov</name>
+      <email>serega.morph[at]gmail.com</email>
+    </developer>
+  </developers>
 
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+  <scm>
+    <connection>scm:git:git@github.com:maveniverse/maven-turbo-builder.git</connection>
+    <developerConnection>scm:git:git@github.com:maveniverse/maven-turbo-builder.git</developerConnection>
+    <url>https://github.com/maveniverse/maven-turbo-builder</url>
+  </scm>
 
+  <properties>
+    <maven.compiler.release>8</maven.compiler.release>
+    <maven.compiler.testRelease>17</maven.compiler.testRelease>
+
+    <maven.version>3.9.10</maven.version>
+
+    <junit-jupiter.version>5.13.3</junit-jupiter.version>
+    <slf4j.version>1.7.36</slf4j.version>
+    <jackson.version>2.18.3</jackson.version>
+  </properties>
+
+  <dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
 
-        <!--test-->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <scope>test</scope>
-        </dependency>
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
     </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!--test-->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit-jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <parameters>true</parameters>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -26,8 +26,6 @@ public class TurboBuilderConfig {
 
     @Override
     public String toString() {
-        return "TurboBuilderConfig{" +
-            "turboTestCompile=" + turboTestCompile +
-            '}';
+        return "TurboBuilderConfig{" + "turboTestCompile=" + turboTestCompile + '}';
     }
 }

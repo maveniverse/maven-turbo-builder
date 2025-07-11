@@ -60,23 +60,24 @@ public class TurboMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
             // test-jar is not supported, because package phase is now executed before compiling tests
             for (MavenProject project : session.getProjects()) {
                 List<Plugin> jarPlugins = project.getBuildPlugins().stream()
-                    .filter(plugin ->
-                        "org.apache.maven.plugins".equals(plugin.getGroupId())
-                            && "maven-jar-plugin".equals(plugin.getArtifactId()))
-                    .collect(Collectors.toList());
+                        .filter(plugin -> "org.apache.maven.plugins".equals(plugin.getGroupId())
+                                && "maven-jar-plugin".equals(plugin.getArtifactId()))
+                        .collect(Collectors.toList());
                 for (Plugin jarPlugin : jarPlugins) {
                     for (PluginExecution pluginExecution : jarPlugin.getExecutions()) {
                         if (pluginExecution.getGoals().contains("test-jar")) {
-                            throw new MavenExecutionException("Maven started with turbo builder (`-b turbo` CLI "
-                                + "parameter or `-bturbo` in .mvn/maven.config) and it's not compatible with " + project
-                                + " test-jar project artifacts and dependencies because of build phase reordering "
-                                + "(package phase is now executed before compiling tests). The maven-jar-plugin "
-                                + "configuration of the project has configured `test-jar` goal.\n"
-                                + "This can be solved in several ways:\n"
-                                + "1. Get rid of test-jar packaging if possible\n"
-                                + "2. Opt-in support of test-jar packaging via `-DturboTestCompile` CLI parameter "
-                                + "or specified in .mvn/maven.config on a separate line",
-                                project.getFile());
+                            throw new MavenExecutionException(
+                                    "Maven started with turbo builder (`-b turbo` CLI "
+                                            + "parameter or `-bturbo` in .mvn/maven.config) and it's not compatible with "
+                                            + project
+                                            + " test-jar project artifacts and dependencies because of build phase reordering "
+                                            + "(package phase is now executed before compiling tests). The maven-jar-plugin "
+                                            + "configuration of the project has configured `test-jar` goal.\n"
+                                            + "This can be solved in several ways:\n"
+                                            + "1. Get rid of test-jar packaging if possible\n"
+                                            + "2. Opt-in support of test-jar packaging via `-DturboTestCompile` CLI parameter "
+                                            + "or specified in .mvn/maven.config on a separate line",
+                                    project.getFile());
                         }
                     }
                 }
@@ -101,30 +102,36 @@ public class TurboMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
             }
         }
         if (skippedReorderedPhases != null && session.getRequest().getGoals().contains("package")) {
-            logger.warn("package phase is requested in combination with turbo builder (`-bturbo` parameter "
-                    + "in the command line or .mvn/maven.config). Please note, that\n"
-                    + ANSI_RED + "{} tests is not included in the execution" + ANSI_RESET
-                    + " because of phase reordering.\n"
-                    + "{}To run tests, use `test`, `verify` or `install` phase instead of `package`.",
-                skippedReorderedPhases,
-                config.isTurboTestCompile() ? "" : "To compile tests, run with parameter `-DturboTestCompile`.\n");
+            logger.warn(
+                    "package phase is requested in combination with turbo builder (`-bturbo` parameter "
+                            + "in the command line or .mvn/maven.config). Please note, that\n"
+                            + ANSI_RED + "{} tests is not included in the execution" + ANSI_RESET
+                            + " because of phase reordering.\n"
+                            + "{}To run tests, use `test`, `verify` or `install` phase instead of `package`.",
+                    skippedReorderedPhases,
+                    config.isTurboTestCompile() ? "" : "To compile tests, run with parameter `-DturboTestCompile`.\n");
         }
     }
 
     private static void checkMavenVersion() {
         boolean mojosExecutionStrategySupported;
         try {
-            Class.forName("org.apache.maven.plugin.MojosExecutionStrategy", true,
-                AbstractMavenLifecycleParticipant.class.getClassLoader());
+            Class.forName(
+                    "org.apache.maven.plugin.MojosExecutionStrategy",
+                    true,
+                    AbstractMavenLifecycleParticipant.class.getClassLoader());
             mojosExecutionStrategySupported = true;
         } catch (ClassNotFoundException e) {
             mojosExecutionStrategySupported = false;
         }
 
         if (!mojosExecutionStrategySupported) {
-            String mavenCoreVersion = AbstractMavenLifecycleParticipant.class.getPackage().getImplementationVersion();
-            logger.warn("Maven version {} is not supported by Turbo builder (`-bturbo` parameter in the command line "
-                + "or .mvn/maven.config). Please use Maven 3.9.0 or newer.", mavenCoreVersion);
+            String mavenCoreVersion =
+                    AbstractMavenLifecycleParticipant.class.getPackage().getImplementationVersion();
+            logger.warn(
+                    "Maven version {} is not supported by Turbo builder (`-bturbo` parameter in the command line "
+                            + "or .mvn/maven.config). Please use Maven 3.9.0 or newer.",
+                    mavenCoreVersion);
         }
     }
 

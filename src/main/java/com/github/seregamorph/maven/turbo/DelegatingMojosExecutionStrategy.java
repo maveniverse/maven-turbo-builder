@@ -37,7 +37,7 @@ public class DelegatingMojosExecutionStrategy implements MojosExecutionStrategy 
 
     @Override
     public void execute(List<MojoExecution> mojos, MavenSession session, MojoExecutionRunner mojoExecutionRunner)
-        throws LifecycleExecutionException {
+            throws LifecycleExecutionException {
         delegate.execute(mojos, session, mojoExecutionRunner);
     }
 }
