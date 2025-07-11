@@ -38,7 +38,7 @@ ij_java_names_count_to_use_import_on_demand = 999
 indent_size = 2
 
 [*.xml]
-indent_size = 4
+indent_size = 2
 
 [{*.yml,*.yaml}]
 indent_size = 2
