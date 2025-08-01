@@ -61,7 +61,7 @@ class DefaultLifecyclePatcher {
      |==>
      |  "test",
      |
-     |  // moved before "*test*" phases
+     |  // moved before "test" phase
      |= "prepare-package",
      |= "package",
 
