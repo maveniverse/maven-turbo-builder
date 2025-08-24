@@ -28,7 +28,8 @@ import org.apache.maven.lifecycle.internal.TaskSegment;
 import org.apache.maven.lifecycle.internal.builder.Builder;
 import org.apache.maven.lifecycle.internal.builder.multithreaded.ConcurrencyDependencyGraph;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Custom maven project builder. It's rewritten from original
@@ -45,20 +46,19 @@ import org.codehaus.plexus.logging.Logger;
 @Named(TurboBuilder.BUILDER_TURBO)
 public class TurboBuilder implements Builder {
 
+    private static final Logger logger = LoggerFactory.getLogger(TurboBuilder.class);
+
     public static final String BUILDER_TURBO = "turbo";
 
     private final LifecycleModuleBuilder lifecycleModuleBuilder;
-    private final Logger logger;
 
     @Inject
     public TurboBuilder(
             DefaultLifecycles defaultLifeCycles,
             LifecycleModuleBuilder lifecycleModuleBuilder,
-            TurboBuilderConfig config,
-            Logger logger
+            TurboBuilderConfig config
     ) {
         this.lifecycleModuleBuilder = lifecycleModuleBuilder;
-        this.logger = logger;
 
         // we patch the default lifecycle in-place only when "-b turbo" parameter is specified
         defaultLifeCycles.getLifeCycles().forEach(lifecycle -> {
@@ -80,8 +80,7 @@ public class TurboBuilder implements Builder {
         int nThreads = Math.min(
             session.getRequest().getDegreeOfConcurrency(),
             session.getProjects().size());
-        logger.info("TurboBuilder will use " + nThreads + " threads to build "
-            + session.getProjects().size() + " modules");
+        logger.info("TurboBuilder will use {} threads to build {} modules", nThreads, session.getProjects().size());
         boolean parallel = nThreads > 1;
         // Propagate the parallel flag to the root session and all of the cloned sessions in each project segment
         session.setParallel(parallel);
