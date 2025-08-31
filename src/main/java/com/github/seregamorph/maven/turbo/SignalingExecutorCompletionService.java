@@ -47,7 +47,10 @@ class SignalingExecutorCompletionService {
             currentSignaler.set(mavenProject -> {
                 // No race condition here with "if (!signaled.get())" block, because it's the same thread.
                 // This callback is eventually called from buildCallable.call() few lines below.
-                signaled.set(true);
+                if (!signaled.compareAndSet(false, true)) {
+                    // this should never happen
+                    throw new IllegalStateException("Current thread has already been signaled");
+                }
                 signaledQueue.add(Try.success(mavenProject));
             });
             try {
