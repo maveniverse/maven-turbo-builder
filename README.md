@@ -40,11 +40,9 @@ validate               | maven-enforcer-plugin         | 3.5.0   | enforce      
 validate               | maven-enforcer-plugin         | 3.5.0   | enforce       | enforce-maven-version   
 validate               | maven-enforcer-plugin         | 3.5.0   | enforce       | enforce-java-version    
 initialize             | jacoco-maven-plugin           | 0.8.13  | prepare-agent | jacoco-agent            
-verify                 | maven-checkstyle-plugin       | 3.6.0   | check         | checkstyle-check        
 process-sources        | spotless-maven-plugin         | 2.44.3  | apply         | default                 
 generate-resources     | maven-remote-resources-plugin | 3.3.0   | process       | process-resource-bundles
 process-resources      | maven-resources-plugin        | 3.3.1   | resources     | default-resources       
-validate               | apache-rat-plugin             | 0.16.1  | check         | rat-check               
 compile                | maven-compiler-plugin         | 3.14.0  | compile       | default-compile         
 package                | maven-jar-plugin              | 3.4.2   | jar           | default-jar             
 process-test-resources | maven-resources-plugin        | 3.3.1   | testResources | default-testResources   
