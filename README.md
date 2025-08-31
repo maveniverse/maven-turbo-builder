@@ -62,7 +62,7 @@ To set up the extension add to `.mvn/extensions.xml` in the root of the project
         <!-- https://github.com/maven-turbo-reactor/maven-turbo-builder -->
         <groupId>com.github.seregamorph</groupId>
         <artifactId>maven-turbo-builder</artifactId>
-        <version>0.8</version>
+        <version>0.9</version>
     </extension>
 </extensions>
 ```
@@ -83,10 +83,15 @@ Example adoption:
 
 Compatibility:
 * this extension can be used with [Maven Surefire Cached Extension](https://github.com/seregamorph/maven-surefire-cached)
+* this extension can be used with [Apache Maven Build Cache Extension](https://maven.apache.org/extensions/maven-build-cache-extension/)
 * this extension can be used with [Develocity Maven Extension](https://gradle.com/help/maven-extension/)
+* this extension can be used with [Dynamic Test Distribution for Maven](https://github.com/seregamorph/test-distribution)
+
+Supported versions:
+`Java` 8+
+`Maven` 3.8.x, 3.9.x and 4.0.x
 
 Known limitations:
-* this extension is not compatible with [Apache Maven Build Cache Extension](https://maven.apache.org/extensions/maven-build-cache-extension/)
 * the `test-jar` dependency (compiled test classes of other module) is not supported, because when downstream dependency is
 scheduled to be built, the test-jar is not yet ready. Don't use `test-jar` dependencies in your project. 
 
