@@ -88,8 +88,8 @@ Compatibility:
 * this extension can be used with [Dynamic Test Distribution for Maven](https://github.com/seregamorph/test-distribution)
 
 Supported versions:
-`Java` 8+
-`Maven` 3.8.x, 3.9.x and 4.0.x
+* `Java` 8+
+* `Maven` 3.8.x, 3.9.x and 4.0.x
 
 Known limitations:
 * the `test-jar` dependency (compiled test classes of other module) is not supported, because when downstream dependency is
