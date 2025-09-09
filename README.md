@@ -6,13 +6,13 @@
 
 See presentation [board](https://miro.com/app/board/uXjVLYUPRas=/?share_link_id=929861907417)
 
-This extension suggests different Maven reactor scheduler behaviour via custom Builder.
+This extension suggests different Maven reactor scheduler implementation via custom Builder.
 By default, to build any module in a multi-module project Maven first resolves and executes all phases of upstream
 dependencies. This is a fundamental behaviour which is built-in and strongly enforced because of back compatibility.
-This significantly reduces possible parallelism and in a multi-core system cores are loaded unevenly. To enhance
+This significantly reduces possible concurrency and in a multi-core system CPU cores are loaded unevenly. To enhance
 parallelism this extension does two things:
 * change the order of `*test*` phases and `*package*`, `package` is executed before `test` (not after as default)
-* schedule module build of downstream dependencies when package phase was executed, not waiting for all phases (like
+* schedule module build of downstream dependencies when `package` phase was executed, not waiting for all phases (like
   `test`, `integration-test`, `install`, `deploy`, etc.)
 
 As a result, depending on the particular project, this boosts the build and increases CPU utilization to maximum.
@@ -88,10 +88,13 @@ Compatibility:
 Supported versions:
 * `Java` 8+
 * `Maven` 3.8.x, 3.9.x and 4.0.x
+* all standard plugins like `maven-surefire-plugin`, `maven-failsafe-plugin` and other
+* plugins like Jacoco are also supported, but potentially may require to change the goal execution phase
 
 Known limitations:
-* the `test-jar` dependency (compiled test classes of other module) is not supported, because when downstream dependency is
-scheduled to be built, the test-jar is not yet ready. Don't use `test-jar` dependencies in your project. 
+* the `test-jar` dependency (compiled test classes of other module) has limited support, because when downstream dependency is
+scheduled to be built, the `test-jar` is not yet ready. Don't use `test-jar` dependencies in your project or use
+suggested failover advice (printed on execution).
 
 Join discussion:
 * discussed in the [Maven Developer Mailing List](https://lists.apache.org/thread/m8yd6zk3pb2k1ptyy5fs97mykzlzof3w)
