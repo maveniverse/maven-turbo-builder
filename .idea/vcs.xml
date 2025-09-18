@@ -5,7 +5,7 @@
       <list>
         <IssueNavigationLink>
           <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/seregamorph/maven-turbo-reactor/pull/$1" />
+          <option name="linkRegexp" value="https://github.com/maven-turbo-reactor/maven-turbo-builder/pull/$1" />
         </IssueNavigationLink>
       </list>
     </option>
