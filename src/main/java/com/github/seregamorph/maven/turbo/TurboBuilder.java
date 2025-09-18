@@ -133,7 +133,7 @@ public class TurboBuilder implements Builder {
         // schedule independent projects
         for (MavenProject mavenProject : analyzer.getRootSchedulableBuilds()) {
             ProjectSegment projectSegment = projectBuildList.get(mavenProject);
-            logger.debug("Scheduling: " + projectSegment.getProject());
+            logger.debug("Scheduling: {}", projectSegment.getProject());
             Callable<MavenProject> cb = createBuildCallable(
                 rootSession, projectSegment, reactorContext, taskSegment, duplicateArtifactIds);
             List<MavenProject> downstreamDependencies = rootSession.getProjectDependencyGraph()
@@ -155,7 +155,7 @@ public class TurboBuilder implements Builder {
                     List<MavenProject> newItemsThatCanBeBuilt = analyzer.markAsFinished(projectBuild);
                     for (MavenProject mavenProject : newItemsThatCanBeBuilt) {
                         ProjectSegment scheduledDependent = projectBuildList.get(mavenProject);
-                        logger.debug("Scheduling: " + scheduledDependent);
+                        logger.debug("Scheduling: {}", scheduledDependent);
                         Callable<MavenProject> cb = createBuildCallable(
                             rootSession,
                             scheduledDependent,
