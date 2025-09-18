@@ -87,7 +87,7 @@ Compatibility:
 
 Supported versions:
 * `Java` 8+
-* `Maven` 3.8.x, 3.9.x and 4.0.x
+* `Maven` 3.8.x, 3.9.x
 * all standard plugins like `maven-surefire-plugin`, `maven-failsafe-plugin` and other
 * plugins like Jacoco are also supported, but potentially may require to change the goal execution phase
 
