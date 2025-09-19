@@ -60,7 +60,7 @@ To set up the extension add to `.mvn/extensions.xml` in the root of the project
         <!-- https://github.com/maven-turbo-reactor/maven-turbo-builder -->
         <groupId>com.github.seregamorph</groupId>
         <artifactId>maven-turbo-builder</artifactId>
-        <version>0.9</version>
+        <version>0.10</version>
     </extension>
 </extensions>
 ```
@@ -87,7 +87,7 @@ Compatibility:
 
 Supported versions:
 * `Java` 8+
-* `Maven` 3.8.x, 3.9.x
+* `Maven` 3.8.x, 3.9.x, 4.0.x
 * all standard plugins like `maven-surefire-plugin`, `maven-failsafe-plugin` and other
 * plugins like Jacoco are also supported, but potentially may require to change the goal execution phase
 
