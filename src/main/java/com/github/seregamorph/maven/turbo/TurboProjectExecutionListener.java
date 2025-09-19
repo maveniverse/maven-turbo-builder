@@ -2,7 +2,6 @@ package com.github.seregamorph.maven.turbo;
 
 import static com.github.seregamorph.maven.turbo.PhaseOrderPatcher.isPackage;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -33,8 +32,7 @@ public class TurboProjectExecutionListener implements ProjectExecutionListener {
 
             if (isReorderPhases()) {
                 TurboBuilderConfig config = TurboBuilderConfig.fromSession(event.getSession());
-                PhaseOrderPatcher.reorderPhases(config, event.getExecutionPlan(), mojoExecution ->
-                    Objects.toString(mojoExecution.getLifecyclePhase(), ""));
+                PhaseOrderPatcher.reorderPhases(config, event.getExecutionPlan(), MojoUtils::getMojoPhase);
             }
         });
     }

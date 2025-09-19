@@ -6,8 +6,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import org.apache.maven.execution.MojoExecutionEvent;
 import org.apache.maven.execution.MojoExecutionListener;
-import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +26,7 @@ public class TurboMojoExecutionListener implements MojoExecutionListener {
                 return;
             }
             if (!execution.signaled && execution.packageMojos.isEmpty()) {
-                String phase = getMojoPhase(event.getExecution());
+                String phase = MojoUtils.getMojoPhase(event.getExecution());
                 if (phase != null && isAnyTest(phase)) {
                     execution.signaled = true;
                     // signal before tests
@@ -60,16 +58,5 @@ public class TurboMojoExecutionListener implements MojoExecutionListener {
 
     @Override
     public void afterExecutionFailure(MojoExecutionEvent event) {
-    }
-
-    private static String getMojoPhase(MojoExecution mojoExecution) {
-        String phase = mojoExecution.getLifecyclePhase();
-        if (phase == null) {
-            MojoDescriptor mojoDescriptor = mojoExecution.getMojoDescriptor();
-            if (mojoDescriptor != null) {
-                phase = mojoDescriptor.getPhase();
-            }
-        }
-        return phase;
     }
 }
