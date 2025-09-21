@@ -89,6 +89,7 @@ class PhaseOrderPatcher {
      * or List of MojoExecution - for Maven 4
      */
     static <T> void reorderPhases(TurboBuilderConfig config, List<T> phaseItems, Function<T, String> phaseExtractor) {
+        int lastPackageItem = -1;
         List<T> packageItems = new ArrayList<>();
         int firstTestItemIndex = -1;
         for (int i = 0; i < phaseItems.size(); i++) {
@@ -100,13 +101,31 @@ class PhaseOrderPatcher {
             }
             if (isPackage(lifecyclePhase)) {
                 packageItems.add(lifecycleItem);
+                lastPackageItem = i;
             }
         }
         // the list of MojoExecution may miss package items
-        if (firstTestItemIndex > -1) {
+        if (firstTestItemIndex > -1 && firstTestItemIndex < lastPackageItem) {
             phaseItems.removeAll(packageItems);
             phaseItems.addAll(firstTestItemIndex, packageItems);
         }
+    }
+
+    static void restorePhases(List<String> phases) {
+        List<String> packagePhases = new ArrayList<>();
+        int testPhaseIndex = -1;
+        for (int i = 0; i < phases.size(); i++) {
+            String lifecyclePhase = phases.get(i);
+            if (testPhaseIndex < 0 && isTest(lifecyclePhase)) {
+                testPhaseIndex = i;
+            }
+            if (isPackage(lifecyclePhase)) {
+                packagePhases.add(lifecyclePhase);
+            }
+        }
+        assert testPhaseIndex > -1;
+        phases.removeAll(packagePhases);
+        phases.addAll(testPhaseIndex - packagePhases.size() + 1, packagePhases);
     }
 
     static boolean isPackage(String phase) {

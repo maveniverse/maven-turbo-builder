@@ -74,7 +74,21 @@ public class TurboBuilder implements Builder {
                 }
             });
         } else {
+            // since Maven 4 changes of DefaultLifecycles have no effect, instead
+            // the MojoExecution are reordered in TurboProjectExecutionListener
             logger.warn("Turbo builder: package and test phases are reordered 🏎");
+        }
+    }
+
+    private void restoreLifecycles() {
+        if (PhaseOrderPatcher.isReorderOnBootstrap()) {
+            // we need this only for Maven Daemon 1.x using Maven 3
+            defaultLifeCycles.getLifeCycles().forEach(lifecycle -> {
+                if ("default".equals(lifecycle.getId())) {
+                    logger.debug("Restoring original order of phases");
+                    PhaseOrderPatcher.restorePhases(lifecycle.getPhases());
+                }
+            });
         }
     }
 
@@ -86,11 +100,24 @@ public class TurboBuilder implements Builder {
         List<TaskSegment> taskSegments,
         ReactorBuildStatus reactorBuildStatus
     ) throws InterruptedException {
+        patchLifecycles(session);
+        try {
+            buildImpl(session, reactorContext, projectBuilds, taskSegments);
+        } finally {
+            restoreLifecycles();
+        }
+    }
+
+    private void buildImpl(
+        MavenSession session,
+        ReactorContext reactorContext,
+        ProjectBuildList projectBuilds,
+        List<TaskSegment> taskSegments
+    ) throws InterruptedException {
         int nThreads = Math.min(
             session.getRequest().getDegreeOfConcurrency(),
             session.getProjects().size());
         logger.info("TurboBuilder will use {} threads to build {} modules", nThreads, session.getProjects().size());
-        patchLifecycles(session);
         boolean parallel = nThreads > 1;
         // Propagate the parallel flag to the root session and all of the cloned sessions in each project segment
         session.setParallel(parallel);
