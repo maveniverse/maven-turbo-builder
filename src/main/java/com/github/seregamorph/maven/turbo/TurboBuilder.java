@@ -17,7 +17,6 @@ import java.util.function.Function;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import org.apache.maven.Maven;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.DefaultLifecycles;
 import org.apache.maven.lifecycle.internal.BuildThreadFactory;
@@ -64,14 +63,13 @@ public class TurboBuilder implements Builder {
     }
 
     private void patchLifecycles(MavenSession session) {
-        TurboBuilderConfig config = TurboBuilderConfig.fromSession(session);
-        String mavenVersion = Maven.class.getPackage().getImplementationVersion();
         // since Maven 4 changes of DefaultLifecycles have no effect
-        if (mavenVersion != null && mavenVersion.startsWith("3.")) {
+        if (PhaseOrderPatcher.isReorderOnBootstrap()) {
             // we patch the default lifecycle in-place only when "-b turbo" parameter is specified
             defaultLifeCycles.getLifeCycles().forEach(lifecycle -> {
                 if ("default".equals(lifecycle.getId())) {
                     logger.warn("Turbo builder: patching default lifecycle 🏎️ (reorder package and test phases)");
+                    TurboBuilderConfig config = TurboBuilderConfig.fromSession(session);
                     PhaseOrderPatcher.reorderPhases(config, lifecycle.getPhases(), Function.identity());
                 }
             });

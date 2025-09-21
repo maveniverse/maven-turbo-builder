@@ -5,7 +5,6 @@ import static com.github.seregamorph.maven.turbo.PhaseOrderPatcher.isPackage;
 import java.util.stream.Collectors;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import org.apache.maven.Maven;
 import org.apache.maven.execution.ProjectExecutionEvent;
 import org.apache.maven.execution.ProjectExecutionListener;
 
@@ -38,9 +37,8 @@ public class TurboProjectExecutionListener implements ProjectExecutionListener {
     }
 
     boolean isReorderPhases() {
-        String mavenVersion = Maven.class.getPackage().getImplementationVersion();
-        // since Maven 4 instead of patching DefaultLifecycles we patch the execution plan
-        return mavenVersion != null && mavenVersion.startsWith("4.");
+        // opposite to ordering on the bootstrap - order during the mojo execution
+        return !PhaseOrderPatcher.isReorderOnBootstrap();
     }
 
     @Override

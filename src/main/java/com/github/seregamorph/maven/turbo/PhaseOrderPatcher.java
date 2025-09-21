@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import org.apache.maven.Maven;
 
 /**
  * @author Sergey Chernov
@@ -74,6 +75,14 @@ class PhaseOrderPatcher {
         "deploy"
     ]
 */
+
+    /**
+     * @return true if phases should be reordered on the bootstrap (only for Maven 3 and not daemon or Maven 4)
+     */
+    static boolean isReorderOnBootstrap() {
+        String mavenVersion = Maven.class.getPackage().getImplementationVersion();
+        return mavenVersion != null && mavenVersion.startsWith("3.");
+    }
 
     /**
      * Reorders Maven DefaultLifecycles (List of String phases) - for Maven 3,

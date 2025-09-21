@@ -12,33 +12,35 @@ import org.junit.jupiter.api.Test;
  */
 class PhaseOrderPatcherTest {
 
+    private static final List<String> originalMaven3Phases = List.of(
+        "validate",
+        "initialize",
+        "generate-sources",
+        "process-sources",
+        "generate-resources",
+        "process-resources",
+        "compile",
+        "process-classes",
+        "generate-test-sources",
+        "process-test-sources",
+        "generate-test-resources",
+        "process-test-resources",
+        "test-compile",
+        "process-test-classes",
+        "test",
+        "prepare-package",
+        "package",
+        "pre-integration-test",
+        "integration-test",
+        "post-integration-test",
+        "verify",
+        "install",
+        "deploy"
+    );
+
     @Test
     public void shouldReorderPhasesNoTestJarSupported() {
-        var phases = new ArrayList<>(List.of(
-            "validate",
-            "initialize",
-            "generate-sources",
-            "process-sources",
-            "generate-resources",
-            "process-resources",
-            "compile",
-            "process-classes",
-            "generate-test-sources",
-            "process-test-sources",
-            "generate-test-resources",
-            "process-test-resources",
-            "test-compile",
-            "process-test-classes",
-            "test",
-            "prepare-package",
-            "package",
-            "pre-integration-test",
-            "integration-test",
-            "post-integration-test",
-            "verify",
-            "install",
-            "deploy"
-        ));
+        var phases = new ArrayList<>(originalMaven3Phases);
         PhaseOrderPatcher.reorderPhases(new TurboBuilderConfig(false), phases, Function.identity());
         assertEquals(List.of(
             "validate",
@@ -69,31 +71,7 @@ class PhaseOrderPatcherTest {
 
     @Test
     public void shouldReorderPhasesTestJarSupported() {
-        var phases = new ArrayList<>(List.of(
-            "validate",
-            "initialize",
-            "generate-sources",
-            "process-sources",
-            "generate-resources",
-            "process-resources",
-            "compile",
-            "process-classes",
-            "generate-test-sources",
-            "process-test-sources",
-            "generate-test-resources",
-            "process-test-resources",
-            "test-compile",
-            "process-test-classes",
-            "test",
-            "prepare-package",
-            "package",
-            "pre-integration-test",
-            "integration-test",
-            "post-integration-test",
-            "verify",
-            "install",
-            "deploy"
-        ));
+        var phases = new ArrayList<>(originalMaven3Phases);
         PhaseOrderPatcher.reorderPhases(new TurboBuilderConfig(true), phases, Function.identity());
         assertEquals(List.of(
             "validate",
