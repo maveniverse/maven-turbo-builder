@@ -85,16 +85,23 @@ class PhaseOrderPatcher {
     }
 
     /**
-     * Reorders Maven DefaultLifecycles (List of String phases) - for Maven 3,
-     * or List of MojoExecution - for Maven 4
+     * Reorders Maven DefaultLifecycles (List of String phases) - for Maven 3, or List of MojoExecution - for Maven 4
+     *
+     * @return list of phases before the reordering
      */
-    static <T> void reorderPhases(TurboBuilderConfig config, List<T> phaseItems, Function<T, String> phaseExtractor) {
+    static <T> List<String> reorderPhases(
+        TurboBuilderConfig config,
+        List<T> phaseItems,
+        Function<T, String> phaseExtractor
+    ) {
         int lastPackageItem = -1;
         List<T> packageItems = new ArrayList<>();
+        List<String> originalPhases = new ArrayList<>();
         int firstTestItemIndex = -1;
         for (int i = 0; i < phaseItems.size(); i++) {
             T lifecycleItem = phaseItems.get(i);
             String lifecyclePhase = phaseExtractor.apply(lifecycleItem);
+            originalPhases.add(lifecyclePhase);
             if (firstTestItemIndex < 0
                 && (config.isTurboTestCompile() ? isTest(lifecyclePhase) : isAnyTest(lifecyclePhase))) {
                 firstTestItemIndex = i;
@@ -109,23 +116,17 @@ class PhaseOrderPatcher {
             phaseItems.removeAll(packageItems);
             phaseItems.addAll(firstTestItemIndex, packageItems);
         }
+        return originalPhases;
     }
 
-    static void restorePhases(List<String> phases) {
-        List<String> packagePhases = new ArrayList<>();
-        int testPhaseIndex = -1;
-        for (int i = 0; i < phases.size(); i++) {
-            String lifecyclePhase = phases.get(i);
-            if (testPhaseIndex < 0 && isTest(lifecyclePhase)) {
-                testPhaseIndex = i;
-            }
-            if (isPackage(lifecyclePhase)) {
-                packagePhases.add(lifecyclePhase);
-            }
+    static void restorePhases(List<String> originalPhases, List<String> targetPhases) {
+        if (originalPhases.size() != targetPhases.size()) {
+            throw new IllegalStateException("Cannot restore original list of phases as they have different sizes: "
+                + "originalPhases=" + originalPhases + ", targetPhases=" + targetPhases);
         }
-        assert testPhaseIndex > -1;
-        phases.removeAll(packagePhases);
-        phases.addAll(testPhaseIndex - packagePhases.size() + 1, packagePhases);
+        for (int i = 0; i < originalPhases.size(); i++) {
+            targetPhases.set(i, originalPhases.get(i));
+        }
     }
 
     static boolean isPackage(String phase) {
