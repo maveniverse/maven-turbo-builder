@@ -13,11 +13,13 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.DefaultLifecycles;
+import org.apache.maven.lifecycle.Lifecycle;
 import org.apache.maven.lifecycle.internal.BuildThreadFactory;
 import org.apache.maven.lifecycle.internal.LifecycleModuleBuilder;
 import org.apache.maven.lifecycle.internal.ProjectBuildList;
@@ -28,16 +30,16 @@ import org.apache.maven.lifecycle.internal.TaskSegment;
 import org.apache.maven.lifecycle.internal.builder.Builder;
 import org.apache.maven.lifecycle.internal.builder.multithreaded.ConcurrencyDependencyGraph;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Custom maven project builder. It's rewritten from original
  * {@link org.apache.maven.lifecycle.internal.builder.multithreaded.MultiThreadedBuilder}
- *
- * Use "-b turbo" maven parameters like "mvn clean verify -b turbo" to activate.
- * Or specify "-bturbo" in the .mvn/maven.config file to use by default.
- * Schedules downstream dependencies right after the package phase, also it's coupled with
- * {@link TurboMojosExecutionStrategy} reordering package and test phases.
+ * <p>
+ * Use "-b turbo" maven parameters like "mvn clean verify -b turbo" to activate. Or specify "-bturbo" in the
+ * .mvn/maven.config file to use by default. Schedules downstream dependencies right after the package phase, also it's
+ * coupled with {@link TurboProjectExecutionListener} reordering package and test phases.
  *
  * @author Sergey Chernov
  */
@@ -45,27 +47,53 @@ import org.codehaus.plexus.logging.Logger;
 @Named(TurboBuilder.BUILDER_TURBO)
 public class TurboBuilder implements Builder {
 
+    private static final Logger logger = LoggerFactory.getLogger(TurboBuilder.class);
+
     public static final String BUILDER_TURBO = "turbo";
 
+    private final DefaultLifecycles defaultLifeCycles;
     private final LifecycleModuleBuilder lifecycleModuleBuilder;
-    private final Logger logger;
 
     @Inject
-    public TurboBuilder(
-            DefaultLifecycles defaultLifeCycles,
-            LifecycleModuleBuilder lifecycleModuleBuilder,
-            TurboBuilderConfig config,
-            Logger logger) {
+    public TurboBuilder(DefaultLifecycles defaultLifeCycles, LifecycleModuleBuilder lifecycleModuleBuilder) {
+        this.defaultLifeCycles = defaultLifeCycles;
         this.lifecycleModuleBuilder = lifecycleModuleBuilder;
-        this.logger = logger;
+    }
 
-        // we patch the default lifecycle in-place only when "-b turbo" parameter is specified
-        defaultLifeCycles.getLifeCycles().forEach(lifecycle -> {
-            if ("default".equals(lifecycle.getId())) {
-                logger.warn("Turbo builder: patching default lifecycle 🏎️ (reorder package and test phases)");
-                DefaultLifecyclePatcher.patchDefaultLifecycle(config, lifecycle.getPhases());
+    /**
+     * @return original list of phases if reordered or null
+     */
+    /*@Nullable*/
+    private List<String> patchLifecycles(MavenSession session) {
+        /*@Nullable*/ List<String> originalPhases = null;
+        if (PhaseOrderPatcher.isReorderOnBootstrap()) {
+            // we patch the default lifecycle in-place only when "-b turbo" parameter is specified
+            for (Lifecycle lifecycle : defaultLifeCycles.getLifeCycles()) {
+                if ("default".equals(lifecycle.getId())) {
+                    logger.warn("Turbo builder: patching default lifecycle 🏎️ (reorder package and test phases)");
+                    TurboBuilderConfig config = TurboBuilderConfig.fromSession(session);
+                    originalPhases =
+                            PhaseOrderPatcher.reorderPhases(config, lifecycle.getPhases(), Function.identity());
+                }
             }
-        });
+        } else {
+            // since Maven 4 changes of DefaultLifecycles have no effect, instead
+            // the MojoExecution are reordered in TurboProjectExecutionListener
+            logger.warn("Turbo builder: package and test phases are reordered 🏎");
+        }
+        return originalPhases;
+    }
+
+    private void restoreLifecycles(/*@Nullable*/ List<String> originalPhases) {
+        if (PhaseOrderPatcher.isReorderOnBootstrap() && originalPhases != null) {
+            // we need this only for Maven Daemon 1.x using Maven 3
+            defaultLifeCycles.getLifeCycles().forEach(lifecycle -> {
+                if ("default".equals(lifecycle.getId())) {
+                    logger.debug("Restoring original order of phases");
+                    PhaseOrderPatcher.restorePhases(originalPhases, lifecycle.getPhases());
+                }
+            });
+        }
     }
 
     @Override
@@ -76,11 +104,27 @@ public class TurboBuilder implements Builder {
             List<TaskSegment> taskSegments,
             ReactorBuildStatus reactorBuildStatus)
             throws InterruptedException {
+        /*@Nullable*/ List<String> originalPhases = patchLifecycles(session);
+        try {
+            buildImpl(session, reactorContext, projectBuilds, taskSegments);
+        } finally {
+            restoreLifecycles(originalPhases);
+        }
+    }
+
+    private void buildImpl(
+            MavenSession session,
+            ReactorContext reactorContext,
+            ProjectBuildList projectBuilds,
+            List<TaskSegment> taskSegments)
+            throws InterruptedException {
         int nThreads = Math.min(
                 session.getRequest().getDegreeOfConcurrency(),
                 session.getProjects().size());
-        logger.info("TurboBuilder will use " + nThreads + " threads to build "
-                + session.getProjects().size() + " modules");
+        logger.info(
+                "TurboBuilder will use {} threads to build {} modules",
+                nThreads,
+                session.getProjects().size());
         boolean parallel = nThreads > 1;
         // Propagate the parallel flag to the root session and all of the cloned sessions in each project segment
         session.setParallel(parallel);
@@ -139,7 +183,7 @@ public class TurboBuilder implements Builder {
         // schedule independent projects
         for (MavenProject mavenProject : analyzer.getRootSchedulableBuilds()) {
             ProjectSegment projectSegment = projectBuildList.get(mavenProject);
-            logger.debug("Scheduling: " + projectSegment.getProject());
+            logger.debug("Scheduling: {}", projectSegment.getProject());
             Callable<MavenProject> cb =
                     createBuildCallable(rootSession, projectSegment, reactorContext, taskSegment, duplicateArtifactIds);
             List<MavenProject> downstreamDependencies =
@@ -161,7 +205,7 @@ public class TurboBuilder implements Builder {
                     List<MavenProject> newItemsThatCanBeBuilt = analyzer.markAsFinished(projectBuild);
                     for (MavenProject mavenProject : newItemsThatCanBeBuilt) {
                         ProjectSegment scheduledDependent = projectBuildList.get(mavenProject);
-                        logger.debug("Scheduling: " + scheduledDependent);
+                        logger.debug("Scheduling: {}", scheduledDependent);
                         Callable<MavenProject> cb = createBuildCallable(
                                 rootSession, scheduledDependent, reactorContext, taskSegment, duplicateArtifactIds);
                         List<MavenProject> downstreamDependencies =
@@ -202,8 +246,11 @@ public class TurboBuilder implements Builder {
             currentThread.setName("mvn-turbo-builder-" + threadNameSuffix);
 
             try {
-                lifecycleModuleBuilder.buildProject(
-                        projectBuild.getSession(), rootSession, reactorContext, project, taskSegment);
+                CurrentProjectExecution.doWithCurrentProject(
+                        projectBuild.getSession(),
+                        project,
+                        () -> lifecycleModuleBuilder.buildProject(
+                                projectBuild.getSession(), rootSession, reactorContext, project, taskSegment));
 
                 return projectBuild.getProject();
             } finally {

@@ -5,7 +5,6 @@ import static com.github.seregamorph.maven.turbo.MavenPropertyUtils.isTrue;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
@@ -31,19 +30,11 @@ public class TurboMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 
     private static final Logger logger = LoggerFactory.getLogger(TurboMavenLifecycleParticipant.class);
 
-    private final TurboBuilderConfig config;
-
-    @Inject
-    public TurboMavenLifecycleParticipant(TurboBuilderConfig config) {
-        this.config = config;
-    }
-
     @Override
     public void afterProjectsRead(MavenSession session) throws MavenExecutionException {
         if (isTurboBuilder(session)) {
             checkTestJarArtifacts(session);
             checkBuilderAndPhase(session);
-            checkMavenVersion();
         }
     }
 
@@ -51,11 +42,11 @@ public class TurboMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
     public void afterSessionEnd(MavenSession session) {
         if (isTurboBuilder(session)) {
             checkBuilderAndPhase(session);
-            checkMavenVersion();
         }
     }
 
     private void checkTestJarArtifacts(MavenSession session) throws MavenExecutionException {
+        TurboBuilderConfig config = TurboBuilderConfig.fromSession(session);
         if (!config.isTurboTestCompile()) {
             // test-jar is not supported, because package phase is now executed before compiling tests
             for (MavenProject project : session.getProjects()) {
@@ -86,6 +77,7 @@ public class TurboMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
     }
 
     private void checkBuilderAndPhase(MavenSession session) {
+        TurboBuilderConfig config = TurboBuilderConfig.fromSession(session);
         // skip both compiling and running tests
         boolean mavenTestSkip = isTrue(getProperty(session, "maven.test.skip"));
         // skip only running tests
@@ -110,28 +102,6 @@ public class TurboMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
                             + "{}To run tests, use `test`, `verify` or `install` phase instead of `package`.",
                     skippedReorderedPhases,
                     config.isTurboTestCompile() ? "" : "To compile tests, run with parameter `-DturboTestCompile`.\n");
-        }
-    }
-
-    private static void checkMavenVersion() {
-        boolean mojosExecutionStrategySupported;
-        try {
-            Class.forName(
-                    "org.apache.maven.plugin.MojosExecutionStrategy",
-                    true,
-                    AbstractMavenLifecycleParticipant.class.getClassLoader());
-            mojosExecutionStrategySupported = true;
-        } catch (ClassNotFoundException e) {
-            mojosExecutionStrategySupported = false;
-        }
-
-        if (!mojosExecutionStrategySupported) {
-            String mavenCoreVersion =
-                    AbstractMavenLifecycleParticipant.class.getPackage().getImplementationVersion();
-            logger.warn(
-                    "Maven version {} is not supported by Turbo builder (`-bturbo` parameter in the command line "
-                            + "or .mvn/maven.config). Please use Maven 3.9.0 or newer.",
-                    mavenCoreVersion);
         }
     }
 

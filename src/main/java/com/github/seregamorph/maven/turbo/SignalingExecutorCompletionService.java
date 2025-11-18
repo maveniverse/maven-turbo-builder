@@ -10,11 +10,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import org.apache.maven.project.MavenProject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Sergey Chernov
  */
 class SignalingExecutorCompletionService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SignalingExecutorCompletionService.class);
 
     static final ThreadLocal<Consumer<MavenProject>> currentSignaler = new ThreadLocal<>();
 
@@ -47,7 +51,11 @@ class SignalingExecutorCompletionService {
             currentSignaler.set(mavenProject -> {
                 // No race condition here with "if (!signaled.get())" block, because it's the same thread.
                 // This callback is eventually called from buildCallable.call() few lines below.
-                signaled.set(true);
+                if (!signaled.compareAndSet(false, true)) {
+                    // this should never happen
+                    throw new IllegalStateException("Current thread has already been signaled");
+                }
+                logger.debug("Project {} signaled to be ready for building its downstream dependencies", mavenProject);
                 signaledQueue.add(Try.success(mavenProject));
             });
             try {
