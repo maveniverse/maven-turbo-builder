@@ -36,6 +36,7 @@
   <scm>
     <connection>scm:git:git@github.com:maveniverse/maven-turbo-builder.git</connection>
     <developerConnection>scm:git:git@github.com:maveniverse/maven-turbo-builder.git</developerConnection>
+    <tag>HEAD</tag>
     <url>https://github.com/maveniverse/maven-turbo-builder</url>
   </scm>
 
