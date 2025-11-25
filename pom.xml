@@ -10,7 +10,7 @@
 
   <groupId>eu.maveniverse.maven.turbo-builder</groupId>
   <artifactId>maven-turbo-builder</artifactId>
-  <version>0.13</version>
+  <version>0.14-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>maven-turbo-builder</name>
   <description>Maven Extension for efficient multi-module build scheduling</description>
@@ -36,7 +36,7 @@
   <scm>
     <connection>scm:git:git@github.com:maveniverse/maven-turbo-builder.git</connection>
     <developerConnection>scm:git:git@github.com:maveniverse/maven-turbo-builder.git</developerConnection>
-    <tag>release-0.13</tag>
+    <tag>HEAD</tag>
     <url>https://github.com/maveniverse/maven-turbo-builder</url>
   </scm>
 
